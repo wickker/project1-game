@@ -1,0 +1,36 @@
+body {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.hidden {
+  display: none;
+}
+
+h1 {
+  margin: 20px 0;
+}
+
+#game-board {
+  height: 450px;
+  width: 450px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.cell {
+  border: solid black 1px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.alive {
+  background-color: black;
+}
+
+.dead {
+  background-color: white;
+}
+
