@@ -1,16 +1,21 @@
 //Global variables
 let gamePlayArr = [];
-let boardSize = 10;
+let boardSize = 5;
 let gameProgressState = false;
 const ALIVE = "alive";
 const DEAD = "dead";
 let timer = 0;
+let qnsBank = {};
+let qnsClickCount = 1;
+let qnsId = 1;
+
 
 //DOM GET variables
 const gameBoardDiv = document.getElementById("game-board");
 const startButtonSelector = document.querySelector("#start-button button");
 const endButtonSelector = document.querySelector("#end-button button");
 const clearButtonSelector = document.querySelector("#clear-button button");
+const saveButtonSelector = document.querySelector("#save-button button");
 
 //Initialize empty game board
 function initGameBoard() {
@@ -22,8 +27,8 @@ function initGameBoard() {
       newCell.className = "cell";
       newCell.classList.add(DEAD);
       newCell.id = x + "-" + y;
-      newCell.style.height = 450 / boardSize + "px";
-      newCell.style.width = 450 / boardSize + "px";
+      newCell.style.height = 800 / boardSize + "px";
+      newCell.style.width = 800 / boardSize + "px";
       newCell.addEventListener("click", playerSetUp);
       gameBoardDiv.appendChild(newCell);
     }
@@ -31,6 +36,7 @@ function initGameBoard() {
   startButtonSelector.addEventListener("click", playGame);
   endButtonSelector.addEventListener("click", endGame);
   clearButtonSelector.addEventListener("click", clearBoard);
+  saveButtonSelector.addEventListener("click", saveGameForQns);
 }
 
 //Lets player set up initial DEAD or ALIVE state of game board
@@ -90,10 +96,10 @@ function playGame(event) {
     }
   }
   // console.log(gamePlayArr);
-  printGamePlayArray();
+  printArray(gamePlayArr);
   //sets interval that playGame function is triggered and cells change state
   if (timer === 0) {
-    timer = setInterval(playGame, 500);
+    timer = setInterval(playGame, 1000);
   }
 }
 
@@ -107,12 +113,12 @@ function endGame() {
 }
 
 //Prints current gamePlayArr to DOM
-function printGamePlayArray() {
+function printArray(arrayName) {
   for (let x = 0; x < boardSize; x++) {
     for (let y = 0; y < boardSize; y++) {
       let cellId = x + "-" + y;
       //console.log(cellId);
-      if (gamePlayArr[x][y] === ALIVE) {
+      if (arrayName[x][y] === ALIVE) {
         document.getElementById(cellId).classList.remove(DEAD);
         document.getElementById(cellId).classList.add(ALIVE);
       } else {
@@ -165,8 +171,37 @@ function checkSurrEight(xCo, yCo) {
 }
 
 function clearBoard() {
+  if (gameProgressState === true) {
+    gameProgressState = false;
+  }
   gameBoardDiv.innerHTML = "";
+  gamePlayArr = [];
   initGameBoard();
+}
+
+function saveGameForQns() {
+  if (gameProgressState === false) {
+    if (qnsClickCount === 1) {
+      qnsBank[qnsId] = {};
+      qnsBank[qnsId].answer = JSON.parse(JSON.stringify(gamePlayArr));
+      qnsClickCount++;
+    }
+    else if (qnsClickCount === 2) {
+      qnsBank[qnsId].puzzle = JSON.parse(JSON.stringify(gamePlayArr));
+      qnsClickCount++;
+    }
+    else if (qnsClickCount === 3) {
+      qnsBank[qnsId].finalForm = JSON.parse(JSON.stringify(gamePlayArr));
+      qnsClickCount++;
+    }
+    else if (qnsClickCount === 4) {
+      qnsBank[qnsId].boardSize = boardSize;
+      qnsClickCount = 1;
+      qnsId++;
+    }
+  }
+  console.log(qnsBank);
+  localStorage.setItem("GOLQnsBank", JSON.stringify(qnsBank));
 }
 
 initGameBoard();
