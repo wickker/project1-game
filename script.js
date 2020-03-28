@@ -2,6 +2,8 @@
 let gamePlayArr = [];
 let boardSize = 10;
 let gameProgressState = false;
+const ALIVE = "alive";
+const DEAD ="dead";
 
 //DOM get variables
 let gameBoardDiv = document.getElementById("game-board");
@@ -12,10 +14,10 @@ function initGameBoard() {
   for (let x = 0; x < boardSize; x++) {
     gamePlayArr.push([]);
     for (let y = 0; y < boardSize; y++) {
-      gamePlayArr[x].push("dead");
+      gamePlayArr[x].push(DEAD);
       let newCell = document.createElement("div");
       newCell.className = "cell";
-      newCell.classList.add("dead");
+      newCell.classList.add(DEAD);
       newCell.id = x + "-" + y;
       newCell.style.height = 450 / boardSize + "px";
       newCell.style.width = 450 / boardSize + "px";
@@ -26,18 +28,18 @@ function initGameBoard() {
   startButtonSelector.addEventListener("click", playGame);
 }
 
-//Lets player set up initial "dead" or "alive" state of game board
+//Lets player set up initial DEAD or ALIVE state of game board
 function playerSetUp(event) {
   //Only functions when game is not in progress
   if (gameProgressState === false) {
-    //Change cell state to "alive" in DOM
-    event.target.classList.remove("dead");
-    event.target.classList.add("alive");
+    //Change cell state to ALIVE in DOM
+    event.target.classList.remove(DEAD);
+    event.target.classList.add(ALIVE);
     //Update cell state in gamePlayArr
     let clickedCellIndex = event.target.id.split("-");
     let xCo = clickedCellIndex[0];
     let yCo = clickedCellIndex[1];
-    gamePlayArr[xCo][yCo] = "alive";
+    gamePlayArr[xCo][yCo] = ALIVE;
     console.log(gamePlayArr);
   }
 }
@@ -56,15 +58,15 @@ function playGame(event) {
   }
   //Based on live cell count, modifies inner cell state
   for (let i = 0; i < arrayLiveCellCount.length; i++) {
-    if (arrayLiveCellCount[i][2] === "alive") {
+    if (arrayLiveCellCount[i][2] === ALIVE) {
       if (arrayLiveCellCount[i][3] < 2 || arrayLiveCellCount[i][3] > 3) {
         gamePlayArr[arrayLiveCellCount[i][0]][arrayLiveCellCount[i][1]] =
-          "dead";
+          DEAD;
       }
-    } else if (arrayLiveCellCount[i][2] === "dead") {
+    } else if (arrayLiveCellCount[i][2] === DEAD) {
       if (arrayLiveCellCount[i][3] === 3) {
         gamePlayArr[arrayLiveCellCount[i][0]][arrayLiveCellCount[i][1]] =
-          "alive";
+          ALIVE;
       }
     }
   }
@@ -72,8 +74,8 @@ function playGame(event) {
   // for (let i = 0; i < boardSize; i++) {
   //   for (let z = 0; z < boardSize; z++) {
   //     if (i === 0 || z === 0 || i === boardSize - 1 || z === boardSize - 1) {
-  //       if (gamePlayArr[i][z] === "alive") {
-  //         gamePlayArr[i][z] = "dead";
+  //       if (gamePlayArr[i][z] === ALIVE) {
+  //         gamePlayArr[i][z] = DEAD;
   //       }
   //     }
   //   }
@@ -88,12 +90,12 @@ function printGamePlayArray() {
     for (let y = 0; y < boardSize; y++) {
       let cellId = x + "-" + y;
       //console.log(cellId);
-      if (gamePlayArr[x][y] === "alive") {
-        document.getElementById(cellId).classList.remove("dead");
-        document.getElementById(cellId).classList.add("alive");
+      if (gamePlayArr[x][y] === ALIVE) {
+        document.getElementById(cellId).classList.remove(DEAD);
+        document.getElementById(cellId).classList.add(ALIVE);
       } else {
-        document.getElementById(cellId).classList.remove("alive");
-        document.getElementById(cellId).classList.add("dead");
+        document.getElementById(cellId).classList.remove(ALIVE);
+        document.getElementById(cellId).classList.add(DEAD);
       }
     }
   }
@@ -111,7 +113,7 @@ function checkSurrEight(xCo, yCo) {
   checkingArray.push(gamePlayArr[xCo + 1][yCo]);
   checkingArray.push(gamePlayArr[xCo + 1][yCo + 1]);
   for (let i = 0; i < checkingArray.length; i++) {
-    if (checkingArray[i] === "alive") {
+    if (checkingArray[i] === ALIVE) {
       aliveCells++;
     }
   }
