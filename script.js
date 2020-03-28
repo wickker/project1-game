@@ -5,7 +5,7 @@ let gameProgressState = false;
 const ALIVE = "alive";
 const DEAD = "dead";
 
-//DOM get variables
+//DOM GET variables
 let gameBoardDiv = document.getElementById("game-board");
 let startButtonSelector = document.querySelector("#start-button button");
 
@@ -32,50 +32,62 @@ function initGameBoard() {
 function playerSetUp(event) {
   //Only functions when game is not in progress
   if (gameProgressState === false) {
-    //Change cell state to ALIVE in DOM
-    event.target.classList.remove(DEAD);
-    event.target.classList.add(ALIVE);
-    //Update cell state in gamePlayArr
     let clickedCellIndex = event.target.id.split("-");
     let xCo = clickedCellIndex[0];
     let yCo = clickedCellIndex[1];
-    gamePlayArr[xCo][yCo] = ALIVE;
-    console.log(gamePlayArr);
+    if (gamePlayArr[xCo][yCo] === ALIVE) {
+      gamePlayArr[xCo][yCo] = DEAD;
+      event.target.classList.remove(ALIVE);
+      event.target.classList.add(DEAD);
+    } else if (gamePlayArr[xCo][yCo] === DEAD) {
+      gamePlayArr[xCo][yCo] = ALIVE;
+      event.target.classList.remove(DEAD);
+      event.target.classList.add(ALIVE);
+    }
+  console.log(gamePlayArr);
   }
 }
 
 function playGame(event) {
   gameProgressState = true;
-  //Saves surrounding live cell count for all cells depending on player setup
+  //Saves surrounding live cell count and cell data for each cell depending on player setup
   let arrayLiveCellCount = [];
   for (let x = 0; x < boardSize; x++) {
     for (let y = 0; y < boardSize; y++) {
-        let cellObj = {
-          xCoor: x,
-          yCoor: y,
-          state: gamePlayArr[x][y],
-          surrLiveCells: checkSurrEight(x, y)
-        };
-        arrayLiveCellCount.push(cellObj);
+      let cellObj = {
+        xCoor: x,
+        yCoor: y,
+        state: gamePlayArr[x][y],
+        surrLiveCells: checkSurrEight(x, y)
+      };
+      arrayLiveCellCount.push(cellObj);
     }
   }
   console.log(arrayLiveCellCount);
-  //Based on live cell count, modifies inner cell state
+  //Based on live cell count, modifies cell state according to Conway GOL rules
   for (let i = 0; i < arrayLiveCellCount.length; i++) {
     if (arrayLiveCellCount[i].state === ALIVE) {
-      if (arrayLiveCellCount[i].surrLiveCells < 2 || arrayLiveCellCount[i].surrLiveCells > 3) {
-        gamePlayArr[arrayLiveCellCount[i].xCoor][arrayLiveCellCount[i].yCoor] = DEAD;
+      if (
+        arrayLiveCellCount[i].surrLiveCells < 2 ||
+        arrayLiveCellCount[i].surrLiveCells > 3
+      ) {
+        gamePlayArr[arrayLiveCellCount[i].xCoor][
+          arrayLiveCellCount[i].yCoor
+        ] = DEAD;
       }
     } else if (arrayLiveCellCount[i].state === DEAD) {
       if (arrayLiveCellCount[i].surrLiveCells === 3) {
-        gamePlayArr[arrayLiveCellCount[i].xCoor][arrayLiveCellCount[i].yCoor] = ALIVE;
+        gamePlayArr[arrayLiveCellCount[i].xCoor][
+          arrayLiveCellCount[i].yCoor
+        ] = ALIVE;
       }
     }
   }
-  console.log(gamePlayArr);
+  // console.log(gamePlayArr);
   printGamePlayArray();
 }
 
+//Prints current gamePlayArr to DOM
 function printGamePlayArray() {
   for (let x = 0; x < boardSize; x++) {
     for (let y = 0; y < boardSize; y++) {
@@ -92,26 +104,27 @@ function printGamePlayArray() {
   }
 }
 
+//Modifies x coordinate if on the edge
 function getX(x) {
   if (x === -1) {
     x = boardSize - 1;
-  }
-  else if (x === boardSize) {
+  } else if (x === boardSize) {
     x = 0;
   }
   return x;
 }
 
+//Modifies y coordinate if on the edge
 function getY(y) {
   if (y === -1) {
     y = boardSize - 1;
-  }
-  else if (y === boardSize) {
+  } else if (y === boardSize) {
     y = 0;
   }
   return y;
 }
 
+//Captures state of surrounding eight cells in an array and counts number of ALIVE cells
 function checkSurrEight(xCo, yCo) {
   let checkingArray = [];
   let aliveCells = 0;
@@ -128,7 +141,7 @@ function checkSurrEight(xCo, yCo) {
       aliveCells++;
     }
   }
-  console.log(checkingArray);
+  // console.log(checkingArray);
   return aliveCells;
 }
 
