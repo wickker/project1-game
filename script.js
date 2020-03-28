@@ -4,10 +4,12 @@ let boardSize = 10;
 let gameProgressState = false;
 const ALIVE = "alive";
 const DEAD = "dead";
+let timer = 0;
 
 //DOM GET variables
 let gameBoardDiv = document.getElementById("game-board");
 let startButtonSelector = document.querySelector("#start-button button");
+let endButtonSelector = document.querySelector("#end-button button");
 
 //Initialize empty game board
 function initGameBoard() {
@@ -26,12 +28,14 @@ function initGameBoard() {
     }
   }
   startButtonSelector.addEventListener("click", playGame);
+  endButtonSelector.addEventListener("click", endGame);
 }
 
 //Lets player set up initial DEAD or ALIVE state of game board
 function playerSetUp(event) {
   //Only functions when game is not in progress
   if (gameProgressState === false) {
+    //Allows player to change cell state then updates new state to gamePlayArr and DOM
     let clickedCellIndex = event.target.id.split("-");
     let xCo = clickedCellIndex[0];
     let yCo = clickedCellIndex[1];
@@ -51,7 +55,7 @@ function playerSetUp(event) {
 function playGame(event) {
   gameProgressState = true;
   //Saves surrounding live cell count and cell data for each cell depending on player setup
-  let arrayLiveCellCount = [];
+  let arrayCellDetails = [];
   for (let x = 0; x < boardSize; x++) {
     for (let y = 0; y < boardSize; y++) {
       let cellObj = {
@@ -60,31 +64,44 @@ function playGame(event) {
         state: gamePlayArr[x][y],
         surrLiveCells: checkSurrEight(x, y)
       };
-      arrayLiveCellCount.push(cellObj);
+      arrayCellDetails.push(cellObj);
     }
   }
-  console.log(arrayLiveCellCount);
+  console.log(arrayCellDetails);
   //Based on live cell count, modifies cell state according to Conway GOL rules
-  for (let i = 0; i < arrayLiveCellCount.length; i++) {
-    if (arrayLiveCellCount[i].state === ALIVE) {
+  for (let i = 0; i < arrayCellDetails.length; i++) {
+    if (arrayCellDetails[i].state === ALIVE) {
       if (
-        arrayLiveCellCount[i].surrLiveCells < 2 ||
-        arrayLiveCellCount[i].surrLiveCells > 3
+        arrayCellDetails[i].surrLiveCells < 2 ||
+        arrayCellDetails[i].surrLiveCells > 3
       ) {
-        gamePlayArr[arrayLiveCellCount[i].xCoor][
-          arrayLiveCellCount[i].yCoor
+        gamePlayArr[arrayCellDetails[i].xCoor][
+          arrayCellDetails[i].yCoor
         ] = DEAD;
       }
-    } else if (arrayLiveCellCount[i].state === DEAD) {
-      if (arrayLiveCellCount[i].surrLiveCells === 3) {
-        gamePlayArr[arrayLiveCellCount[i].xCoor][
-          arrayLiveCellCount[i].yCoor
+    } else if (arrayCellDetails[i].state === DEAD) {
+      if (arrayCellDetails[i].surrLiveCells === 3) {
+        gamePlayArr[arrayCellDetails[i].xCoor][
+          arrayCellDetails[i].yCoor
         ] = ALIVE;
       }
     }
   }
   // console.log(gamePlayArr);
   printGamePlayArray();
+  //sets interval that playGame function is triggered and cells change state
+  if (timer === 0) {
+    timer = setInterval(playGame, 500);
+  }
+}
+
+//Clears interval and freezes game board, allowing player to change cell configuration
+function endGame() {
+  if (timer !== 0) {
+    clearInterval(timer);
+    timer = 0;
+  }
+  gameProgressState = false;
 }
 
 //Prints current gamePlayArr to DOM
