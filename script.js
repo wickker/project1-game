@@ -9,12 +9,6 @@ const DEAD = "dead";
 let gameBoardDiv = document.getElementById("game-board");
 let startButtonSelector = document.querySelector("#start-button button");
 
-function scrooll() {
-  console.log("scrollinggg");
-}
-
-gameBoardDiv.addEventListener("scroll", scrooll);
-
 //Initialize empty game board
 function initGameBoard() {
   for (let x = 0; x < boardSize; x++) {
@@ -56,20 +50,25 @@ function playGame(event) {
   let arrayLiveCellCount = [];
   for (let x = 0; x < boardSize; x++) {
     for (let y = 0; y < boardSize; y++) {
-        let surrLiveCells = checkSurrEight(x, y);
-        arrayLiveCellCount.push([x, y, gamePlayArr[x][y], surrLiveCells]);
+        let cellObj = {
+          xCoor: x,
+          yCoor: y,
+          state: gamePlayArr[x][y],
+          surrLiveCells: checkSurrEight(x, y)
+        };
+        arrayLiveCellCount.push(cellObj);
     }
   }
   console.log(arrayLiveCellCount);
   //Based on live cell count, modifies inner cell state
   for (let i = 0; i < arrayLiveCellCount.length; i++) {
-    if (arrayLiveCellCount[i][2] === ALIVE) {
-      if (arrayLiveCellCount[i][3] < 2 || arrayLiveCellCount[i][3] > 3) {
-        gamePlayArr[arrayLiveCellCount[i][0]][arrayLiveCellCount[i][1]] = DEAD;
+    if (arrayLiveCellCount[i].state === ALIVE) {
+      if (arrayLiveCellCount[i].surrLiveCells < 2 || arrayLiveCellCount[i].surrLiveCells > 3) {
+        gamePlayArr[arrayLiveCellCount[i].xCoor][arrayLiveCellCount[i].yCoor] = DEAD;
       }
-    } else if (arrayLiveCellCount[i][2] === DEAD) {
-      if (arrayLiveCellCount[i][3] === 3) {
-        gamePlayArr[arrayLiveCellCount[i][0]][arrayLiveCellCount[i][1]] = ALIVE;
+    } else if (arrayLiveCellCount[i].state === DEAD) {
+      if (arrayLiveCellCount[i].surrLiveCells === 3) {
+        gamePlayArr[arrayLiveCellCount[i].xCoor][arrayLiveCellCount[i].yCoor] = ALIVE;
       }
     }
   }
