@@ -7,9 +7,10 @@ const DEAD = "dead";
 let timer = 0;
 
 //DOM GET variables
-let gameBoardDiv = document.getElementById("game-board");
-let startButtonSelector = document.querySelector("#start-button button");
-let endButtonSelector = document.querySelector("#end-button button");
+const gameBoardDiv = document.getElementById("game-board");
+const startButtonSelector = document.querySelector("#start-button button");
+const endButtonSelector = document.querySelector("#end-button button");
+const clearButtonSelector = document.querySelector("#clear-button button");
 
 //Initialize empty game board
 function initGameBoard() {
@@ -29,6 +30,7 @@ function initGameBoard() {
   }
   startButtonSelector.addEventListener("click", playGame);
   endButtonSelector.addEventListener("click", endGame);
+  clearButtonSelector.addEventListener("click", clearBoard);
 }
 
 //Lets player set up initial DEAD or ALIVE state of game board
@@ -160,6 +162,11 @@ function checkSurrEight(xCo, yCo) {
   }
   // console.log(checkingArray);
   return aliveCells;
+}
+
+function clearBoard() {
+  gameBoardDiv.innerHTML = "";
+  initGameBoard();
 }
 
 initGameBoard();
