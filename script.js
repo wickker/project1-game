@@ -1,6 +1,7 @@
 //Global variables
+let boardSizeDimension = 600;
 let gamePlayArr = [];
-let boardSize = 5;
+let boardSize = 10;
 let gameProgressState = false;
 const ALIVE = "alive";
 const DEAD = "dead";
@@ -8,7 +9,6 @@ let timer = 0;
 let qnsBank = {};
 let qnsClickCount = 1;
 let qnsId = 1;
-
 
 //DOM GET variables
 const gameBoardDiv = document.getElementById("game-board");
@@ -27,8 +27,8 @@ function initGameBoard() {
       newCell.className = "cell";
       newCell.classList.add(DEAD);
       newCell.id = x + "-" + y;
-      newCell.style.height = 800 / boardSize + "px";
-      newCell.style.width = 800 / boardSize + "px";
+      newCell.style.height = boardSizeDimension / boardSize + "px";
+      newCell.style.width = boardSizeDimension / boardSize + "px";
       newCell.addEventListener("click", playerSetUp);
       gameBoardDiv.appendChild(newCell);
     }

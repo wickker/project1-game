@@ -1,26 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css?family=Quicksand&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Quicksand&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
     <title></title>
   </head>
   <body>
     <div id="main">
-      <h1></h1>
-      <div id="start-button" class="visible">
-        <button>START GAME</button>
+      <div class="col" id="left">
+        <h2>Easy</h2>
+        <p><button id="q1">Q1</button></p>
+        <p>Q2</p>
+        <h2>Medium</h2>
+        <p>Q3</p>
+        <p>Q4</p>
+        <h2>Hard</h2>
+        <p>Q5</p>
+        <p>Q6</p>
       </div>
-      <div id="game-board"></div>
-      <div id="end-button" class="visible">
-        <button>STOP GAME</button>
+      <div class="col" id="center">
+        <h1>TITLE</h1>
+        <div id="start-button" class="visible">
+          <button>START GAME</button>
+        </div>
+        <div id="game-board"></div>
+        <div id="inline-button">
+          <div id="end-button" class="visible">
+            <button>STOP GAME</button>
+          </div>
+          <div id="clear-button" class="visible">
+            <button>CLEAR GAME BOARD</button>
+          </div>
+        </div>
+        <div id="save-button" class="visible">
+          <button>SAVE GAME</button>
+        </div>
       </div>
-      <div id="clear-button" class="visible">
-        <button>CLEAR GAME BOARD</button>
-      </div>
-      <div id="save-button" class="visible">
-        <button>SAVE GAME</button>
+      <div class="col" id="right">
+        <h2>Target form:</h2>
+        <div id="target-form-board"></div>
       </div>
     </div>
     <script src="script.js"></script>

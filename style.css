@@ -2,24 +2,50 @@ body {
   font-family: 'Quicksand', sans-serif;
 }
 
+#left, #right {
+  width: 400px;
+}
+
+#center, #inline-button {
+  width: 600px;
+}
+
 #main {
+  display: flex;
+  justify-content: center;
+}
+
+.col {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+#inline-button {
+  display: flex;
+  justify-content: space-between;
+}
+
+div {
+  border: solid black 0.5px;
+}
+
 .hidden {
   display: none;
 }
 
-h1 {
-  margin: 20px 0;
+#target-form-board {
+  height: 300px;
+  width: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px 0;
 }
 
 #game-board {
-  height: 800px;
-  width: 800px;
+  height: 600px;
+  width: 600px;
   display: flex;
   flex-wrap: wrap;
   margin: 20px 0;
