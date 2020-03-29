@@ -15,12 +15,12 @@ let timer = 0;
 let qnsProgressState = false;
 let totalQns = 6;
 let qnsText = {
-  q1: "test 1",
-  q2: "test 2",
-  q3: "test 3",
-  q4: "test 4",
-  q5: "test 5",
-  q6: "test 6"
+  q1: "Reach the target form in 2 clicks and 1 generation. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q2: "Reach the target form in 2 clicks and 1 generation. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q3: "Reach the target form in 2 clicks and 4 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q4: "Reach the target form in 2 clicks and 4 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q5: "Reach the target form in 4 clicks and 2 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q6: "Reach the target form in 2 clicks and 5 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations."
 };
 let winMsg = "You found a match!";
 
@@ -77,7 +77,7 @@ function loadQns(event) {
   console.log(qnsNum);
   currentBoardSize = questionBank[qnsNum].boardSize;
   console.log(currentBoardSize);
-  qnsTextSelector.textContent = qnsText[event.target.id];
+  qnsTextSelector.innerHTML = qnsText[event.target.id];
   initGameBoard(currentBoardSize);
   printAndPushArrayToGameBoard(questionBank[qnsNum].puzzle);
   loadTargetForm(qnsNum);

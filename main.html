@@ -23,7 +23,7 @@
         <p><button id="q6">Q6</button></p>
       </div>
       <div class="col" id="center">
-        <h1>TITLE</h1>
+        <h1>CONWAY'S GAME OF LIFE</h1>
         <div id="qns-text"></div>
         <div id="start-button" class="visible">
           <button>START GAME</button>
@@ -40,6 +40,15 @@
         </div>
         <div id="save-button" class="hidden">
           <button>SAVE GAME</button>
+        </div>
+        <div id="intro">
+          <h3>Rules</h3>
+          <ul>
+            <li>Every cell interacts with its eight neighbors. Live cells are black and dead cells are white.</li>
+            <li>Live cells with fewer than two live neighbors or more than three live neighbors will die.</li>
+            <li>Live cells with two or three live neighbors will live on to the next generation.</li>
+            <li>Dead cells with exactly three live neighbors will be 'reborn' as a live cells.</li>
+          </ul>
         </div>
       </div>
       <div class="col" id="right">
