@@ -1,14 +1,26 @@
 //Global variables
 let boardSizeDimension = 600;
+let targetFormDimension = 300;
 let gamePlayArr = [];
 let boardSize = 10;
+let currentBoardSize;
 let gameProgressState = false;
 const ALIVE = "alive";
 const DEAD = "dead";
 let timer = 0;
-let qnsBank = {};
-let qnsClickCount = 1;
-let qnsId = 1;
+// let qnsBank = {};
+// let qnsClickCount = 1;
+// let qnsId = 1;
+let qnsProgressState = false;
+let totalQns = 6;
+let qnsText = {
+  q1: "test 1",
+  q2: "test 2",
+  q3: "test 3",
+  q4: "test 4",
+  q5: "test 5",
+  q6: "test 6"
+};
 
 //DOM GET variables
 const gameBoardDiv = document.getElementById("game-board");
@@ -16,19 +28,22 @@ const startButtonSelector = document.querySelector("#start-button button");
 const endButtonSelector = document.querySelector("#end-button button");
 const clearButtonSelector = document.querySelector("#clear-button button");
 const saveButtonSelector = document.querySelector("#save-button button");
+// const questionBank = JSON.parse(window.localStorage.getItem("GOLQnsBank"));
+const questionBank = puzzles;
+const targetFormDiv = document.getElementById("target-form-board");
 
 //Initialize empty game board
-function initGameBoard() {
-  for (let x = 0; x < boardSize; x++) {
+function initGameBoard(size) {
+  for (let x = 0; x < size; x++) {
     gamePlayArr.push([]);
-    for (let y = 0; y < boardSize; y++) {
+    for (let y = 0; y < size; y++) {
       gamePlayArr[x].push(DEAD);
       let newCell = document.createElement("div");
       newCell.className = "cell";
       newCell.classList.add(DEAD);
       newCell.id = x + "-" + y;
-      newCell.style.height = boardSizeDimension / boardSize + "px";
-      newCell.style.width = boardSizeDimension / boardSize + "px";
+      newCell.style.height = boardSizeDimension / size + "px";
+      newCell.style.width = boardSizeDimension / size + "px";
       newCell.addEventListener("click", playerSetUp);
       gameBoardDiv.appendChild(newCell);
     }
@@ -36,7 +51,50 @@ function initGameBoard() {
   startButtonSelector.addEventListener("click", playGame);
   endButtonSelector.addEventListener("click", endGame);
   clearButtonSelector.addEventListener("click", clearBoard);
-  saveButtonSelector.addEventListener("click", saveGameForQns);
+}
+
+function initQuestionButton() {
+  for (let i = 1; i < totalQns + 1; i++) {
+    let qnsSelector = document.getElementById("q" + i);
+    qnsSelector.addEventListener("click", loadQns);
+  }
+}
+
+function loadQns(event) {
+  if (qnsProgressState === true) {
+    gameBoardDiv.innerHTML = "";
+    targetFormDiv.innerHTML = "";
+    gamePlayArr = [];
+    qnsProgressState = false;
+  }
+  let qnsNum = parseInt(event.target.id.slice(-1));
+  console.log(qnsNum);
+  currentBoardSize = questionBank[qnsNum].boardSize;
+  console.log(currentBoardSize);
+  initGameBoard(currentBoardSize);
+  printAndPushArrayToGameBoard(questionBank[qnsNum].puzzle);
+  loadTargetForm(qnsNum);
+  qnsProgressState = true;
+}
+
+function loadTargetForm(num) {
+  for (let x = 0; x < questionBank[num].boardSize; x++) {
+    for (let y = 0; y < questionBank[num].boardSize; y++) {
+      let newCell = document.createElement("div");
+      newCell.className = "cell";
+      newCell.id = "target-" + x + "-" + y;
+      newCell.style.height =
+        targetFormDimension / questionBank[num].boardSize + "px";
+      newCell.style.width =
+        targetFormDimension / questionBank[num].boardSize + "px";
+      if (questionBank[num].finalForm[x][y] === ALIVE) {
+        newCell.classList.add(ALIVE);
+      } else {
+        newCell.classList.add(DEAD);
+      }
+      targetFormDiv.appendChild(newCell);
+    }
+  }
 }
 
 //Lets player set up initial DEAD or ALIVE state of game board
@@ -56,7 +114,7 @@ function playerSetUp(event) {
       event.target.classList.remove(DEAD);
       event.target.classList.add(ALIVE);
     }
-  console.log(gamePlayArr);
+    console.log(gamePlayArr);
   }
 }
 
@@ -64,8 +122,8 @@ function playGame(event) {
   gameProgressState = true;
   //Saves surrounding live cell count and cell data for each cell depending on player setup
   let arrayCellDetails = [];
-  for (let x = 0; x < boardSize; x++) {
-    for (let y = 0; y < boardSize; y++) {
+  for (let x = 0; x < currentBoardSize; x++) {
+    for (let y = 0; y < currentBoardSize; y++) {
       let cellObj = {
         xCoor: x,
         yCoor: y,
@@ -96,7 +154,7 @@ function playGame(event) {
     }
   }
   // console.log(gamePlayArr);
-  printArray(gamePlayArr);
+  printArrayToGameBoard(gamePlayArr);
   //sets interval that playGame function is triggered and cells change state
   if (timer === 0) {
     timer = setInterval(playGame, 1000);
@@ -104,7 +162,7 @@ function playGame(event) {
 }
 
 //Clears interval and freezes game board, allowing player to change cell configuration
-function endGame() {
+function endGame(event) {
   if (timer !== 0) {
     clearInterval(timer);
     timer = 0;
@@ -113,9 +171,9 @@ function endGame() {
 }
 
 //Prints current gamePlayArr to DOM
-function printArray(arrayName) {
-  for (let x = 0; x < boardSize; x++) {
-    for (let y = 0; y < boardSize; y++) {
+function printArrayToGameBoard(arrayName) {
+  for (let x = 0; x < currentBoardSize; x++) {
+    for (let y = 0; y < currentBoardSize; y++) {
       let cellId = x + "-" + y;
       //console.log(cellId);
       if (arrayName[x][y] === ALIVE) {
@@ -129,11 +187,29 @@ function printArray(arrayName) {
   }
 }
 
+function printAndPushArrayToGameBoard(arrayName) {
+  for (let x = 0; x < currentBoardSize; x++) {
+    for (let y = 0; y < currentBoardSize; y++) {
+      let cellId = x + "-" + y;
+      //console.log(cellId);
+      if (arrayName[x][y] === ALIVE) {
+        document.getElementById(cellId).classList.remove(DEAD);
+        document.getElementById(cellId).classList.add(ALIVE);
+        gamePlayArr[x][y] = ALIVE;
+      } else {
+        document.getElementById(cellId).classList.remove(ALIVE);
+        document.getElementById(cellId).classList.add(DEAD);
+        gamePlayArr[x][y] = DEAD;
+      }
+    }
+  }
+}
+
 //Modifies x coordinate if on the edge
 function getX(x) {
   if (x === -1) {
-    x = boardSize - 1;
-  } else if (x === boardSize) {
+    x = currentBoardSize - 1;
+  } else if (x === currentBoardSize) {
     x = 0;
   }
   return x;
@@ -142,8 +218,8 @@ function getX(x) {
 //Modifies y coordinate if on the edge
 function getY(y) {
   if (y === -1) {
-    y = boardSize - 1;
-  } else if (y === boardSize) {
+    y = currentBoardSize - 1;
+  } else if (y === currentBoardSize) {
     y = 0;
   }
   return y;
@@ -170,38 +246,39 @@ function checkSurrEight(xCo, yCo) {
   return aliveCells;
 }
 
-function clearBoard() {
+function clearBoard(event) {
   if (gameProgressState === true) {
     gameProgressState = false;
   }
   gameBoardDiv.innerHTML = "";
   gamePlayArr = [];
-  initGameBoard();
+  initGameBoard(currentBoardSize);
 }
 
-function saveGameForQns() {
-  if (gameProgressState === false) {
-    if (qnsClickCount === 1) {
-      qnsBank[qnsId] = {};
-      qnsBank[qnsId].answer = JSON.parse(JSON.stringify(gamePlayArr));
-      qnsClickCount++;
-    }
-    else if (qnsClickCount === 2) {
-      qnsBank[qnsId].puzzle = JSON.parse(JSON.stringify(gamePlayArr));
-      qnsClickCount++;
-    }
-    else if (qnsClickCount === 3) {
-      qnsBank[qnsId].finalForm = JSON.parse(JSON.stringify(gamePlayArr));
-      qnsClickCount++;
-    }
-    else if (qnsClickCount === 4) {
-      qnsBank[qnsId].boardSize = boardSize;
-      qnsClickCount = 1;
-      qnsId++;
-    }
-  }
-  console.log(qnsBank);
-  localStorage.setItem("GOLQnsBank", JSON.stringify(qnsBank));
-}
+initQuestionButton();
 
-initGameBoard();
+// function saveGameForQns() {
+//   if (gameProgressState === false) {
+//     if (qnsClickCount === 1) {
+//       qnsBank[qnsId] = {};
+//       qnsBank[qnsId].answer = JSON.parse(JSON.stringify(gamePlayArr));
+//       qnsClickCount++;
+//     }
+//     else if (qnsClickCount === 2) {
+//       qnsBank[qnsId].puzzle = JSON.parse(JSON.stringify(gamePlayArr));
+//       qnsClickCount++;
+//     }
+//     else if (qnsClickCount === 3) {
+//       console.log(gamePlayArr);
+//       qnsBank[qnsId].finalForm = JSON.parse(JSON.stringify(gamePlayArr));
+//       qnsClickCount++;
+//     }
+//     else if (qnsClickCount === 4) {
+//       qnsBank[qnsId].boardSize = boardSize;
+//       qnsClickCount = 1;
+//       qnsId++;
+//     }
+//   }
+//   console.log(qnsBank);
+//   localStorage.setItem("GOLQnsBank", JSON.stringify(qnsBank));
+// }
