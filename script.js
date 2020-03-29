@@ -2,6 +2,7 @@
 let boardSizeDimension = 600;
 let targetFormDimension = 300;
 let gamePlayArr = [];
+let targetFormArr = [];
 let boardSize = 10;
 let currentBoardSize;
 let gameProgressState = false;
@@ -21,6 +22,7 @@ let qnsText = {
   q5: "test 5",
   q6: "test 6"
 };
+let winMsg = "You found a match!";
 
 //DOM GET variables
 const gameBoardDiv = document.getElementById("game-board");
@@ -28,9 +30,10 @@ const startButtonSelector = document.querySelector("#start-button button");
 const endButtonSelector = document.querySelector("#end-button button");
 const clearButtonSelector = document.querySelector("#clear-button button");
 const saveButtonSelector = document.querySelector("#save-button button");
-// const questionBank = JSON.parse(window.localStorage.getItem("GOLQnsBank"));
 const questionBank = puzzles;
 const targetFormDiv = document.getElementById("target-form-board");
+const qnsTextSelector = document.getElementById("qns-text");
+const winMsgSelector = document.getElementById("win-msg");
 
 //Initialize empty game board
 function initGameBoard(size) {
@@ -53,6 +56,7 @@ function initGameBoard(size) {
   clearButtonSelector.addEventListener("click", clearBoard);
 }
 
+//Initialize question buttons
 function initQuestionButton() {
   for (let i = 1; i < totalQns + 1; i++) {
     let qnsSelector = document.getElementById("q" + i);
@@ -64,33 +68,49 @@ function loadQns(event) {
   if (qnsProgressState === true) {
     gameBoardDiv.innerHTML = "";
     targetFormDiv.innerHTML = "";
+    winMsgSelector.innerHTML = "";
     gamePlayArr = [];
+    targetFormArr = [];
     qnsProgressState = false;
   }
   let qnsNum = parseInt(event.target.id.slice(-1));
   console.log(qnsNum);
   currentBoardSize = questionBank[qnsNum].boardSize;
   console.log(currentBoardSize);
+  qnsTextSelector.textContent = qnsText[event.target.id];
   initGameBoard(currentBoardSize);
   printAndPushArrayToGameBoard(questionBank[qnsNum].puzzle);
   loadTargetForm(qnsNum);
   qnsProgressState = true;
 }
 
+function checkWin() {
+  for (let x = 0; x < currentBoardSize; x++) {
+    for (let y = 0; y < currentBoardSize; y++) {
+      if (gamePlayArr[x][y] !== targetFormArr[x][y]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+//Loads target form pattern on DOM and global array depending on selected question number; players may not ammend this pattern
 function loadTargetForm(num) {
   for (let x = 0; x < questionBank[num].boardSize; x++) {
+    targetFormArr.push([]);
     for (let y = 0; y < questionBank[num].boardSize; y++) {
       let newCell = document.createElement("div");
       newCell.className = "cell";
       newCell.id = "target-" + x + "-" + y;
-      newCell.style.height =
-        targetFormDimension / questionBank[num].boardSize + "px";
-      newCell.style.width =
-        targetFormDimension / questionBank[num].boardSize + "px";
+      newCell.style.height = targetFormDimension / questionBank[num].boardSize + "px";
+      newCell.style.width = targetFormDimension / questionBank[num].boardSize + "px";
       if (questionBank[num].finalForm[x][y] === ALIVE) {
         newCell.classList.add(ALIVE);
+        targetFormArr[x].push(ALIVE);
       } else {
         newCell.classList.add(DEAD);
+        targetFormArr[x].push(DEAD);
       }
       targetFormDiv.appendChild(newCell);
     }
@@ -137,19 +157,12 @@ function playGame(event) {
   //Based on live cell count, modifies cell state according to Conway GOL rules
   for (let i = 0; i < arrayCellDetails.length; i++) {
     if (arrayCellDetails[i].state === ALIVE) {
-      if (
-        arrayCellDetails[i].surrLiveCells < 2 ||
-        arrayCellDetails[i].surrLiveCells > 3
-      ) {
-        gamePlayArr[arrayCellDetails[i].xCoor][
-          arrayCellDetails[i].yCoor
-        ] = DEAD;
+      if (arrayCellDetails[i].surrLiveCells < 2 || arrayCellDetails[i].surrLiveCells > 3) {
+        gamePlayArr[arrayCellDetails[i].xCoor][arrayCellDetails[i].yCoor] = DEAD;
       }
     } else if (arrayCellDetails[i].state === DEAD) {
       if (arrayCellDetails[i].surrLiveCells === 3) {
-        gamePlayArr[arrayCellDetails[i].xCoor][
-          arrayCellDetails[i].yCoor
-        ] = ALIVE;
+        gamePlayArr[arrayCellDetails[i].xCoor][arrayCellDetails[i].yCoor] = ALIVE;
       }
     }
   }
@@ -159,15 +172,29 @@ function playGame(event) {
   if (timer === 0) {
     timer = setInterval(playGame, 1000);
   }
+  if (checkWin()) {
+    endGame();
+    winMsgSelector.textContent = winMsg;
+  }
 }
 
 //Clears interval and freezes game board, allowing player to change cell configuration
-function endGame(event) {
+function endGame() {
   if (timer !== 0) {
     clearInterval(timer);
     timer = 0;
   }
   gameProgressState = false;
+}
+
+function clearBoard(event) {
+  if (gameProgressState === true) {
+    gameProgressState = false;
+  }
+  gameBoardDiv.innerHTML = "";
+  gamePlayArr = [];
+  winMsgSelector.innerHTML = "";
+  initGameBoard(currentBoardSize);
 }
 
 //Prints current gamePlayArr to DOM
@@ -244,15 +271,6 @@ function checkSurrEight(xCo, yCo) {
   }
   // console.log(checkingArray);
   return aliveCells;
-}
-
-function clearBoard(event) {
-  if (gameProgressState === true) {
-    gameProgressState = false;
-  }
-  gameBoardDiv.innerHTML = "";
-  gamePlayArr = [];
-  initGameBoard(currentBoardSize);
 }
 
 initQuestionButton();
