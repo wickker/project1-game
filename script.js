@@ -13,6 +13,7 @@ let generationCount = 0;
 const questionBank = puzzles;
 let savedGame2DArr = JSON.parse(window.localStorage.getItem("savedGames")) || [];
 let gameName;
+let highScore = JSON.parse(window.localStorage.getItem("highScore")) || 0;
 // let qnsBank = {};
 // let qnsClickCount = 1;
 // let qnsId = 1;
@@ -49,6 +50,7 @@ const genCountNumSelector = document.getElementById("gen-count-num");
 const modeButtonSelector = document.querySelector("#toggle-button button");
 const gameModeSpan = document.getElementById("mode");
 const savedGamesDiv = document.getElementById("saved-games");
+const randomBoardSelector = document.querySelector("#random-board-button button");
 
 function changeMode(event) {
   generationCount = 0;
@@ -76,6 +78,9 @@ function changeMode(event) {
     qnsTextSelector.textContent = sandBoxPrompt;
     clearBoardForSandBox();
     createAndDisplayAllSavedElements();
+    if (highScore !== 0) {
+      displayHighScoreAndClearButton();
+    }
   } //Change game mode to PUZZLE
   else if (gameModeState === "sandbox") {
     gameModeState = "puz";
@@ -118,8 +123,7 @@ function initGameBoardPuz(size) {
     }
   }
   startButtonSelector.addEventListener("click", playGame);
-  endButtonSelector.addEventListener("click", endGame);
-  // clearButtonSelector.addEventListener("click", clearBoardForPuz);
+  endButtonSelector.addEventListener("click", endGamePuz);
 }
 
 //Initialize empty game board - SANDBOX MODE
@@ -140,9 +144,10 @@ function initGameBoardSandBox(size) {
   }
   currentBoardSize = size;
   startButtonSelector.addEventListener("click", playGame);
-  endButtonSelector.addEventListener("click", endGame);
+  endButtonSelector.addEventListener("click", endGameSandBox);
   clearButtonSelector.addEventListener("click", clearBoardForSandBox);
   saveButtonSelector.addEventListener("click", saveGameForPlayer);
+  randomBoardSelector.addEventListener("click", randomBoard);
 }
 
 //Initialize question buttons
@@ -152,6 +157,14 @@ function initQuestionButton() {
     qnsSelector.addEventListener("click", loadQns);
   }
   modeButtonSelector.addEventListener("click", changeMode);
+  let sandBoxElements = document.getElementsByClassName("sandbox");
+  for (let i = 0; i < sandBoxElements.length; i++) {
+    sandBoxElements[i].classList.add("hidden");
+  }
+  let puzElements = document.getElementsByClassName("puz");
+  for (let z = 0; z < puzElements.length; z++) {
+    puzElements[z].classList.remove("hidden");
+  }
 }
 
 function loadQns(event) {
@@ -258,14 +271,41 @@ function playGame(event) {
   }
   if (gameModeState === "puz") {
     if (checkWin()) {
-      endGame();
+      endGamePuz();
       winMsgSelector.textContent = winMsg;
+    }
+  }
+  if (gameModeState === "sandbox") {
+    if (generationCount > highScore) {
+      highScore = generationCount;
+      localStorage.setItem("highScore", JSON.stringify(highScore));
+      console.log(highScore);
     }
   }
 }
 
 //Clears interval and freezes game board, allowing player to change cell configuration
-function endGame() {
+function endGameSandBox() {
+  if (timer !== 0) {
+    clearInterval(timer);
+    timer = 0;
+  }
+  displayHighScoreAndClearButton();
+  gameProgressState = false;
+}
+
+function displayHighScoreAndClearButton() {
+  document.querySelector("#highscore").innerHTML = "";
+  let newH2 = document.createElement("h2");
+  newH2.textContent = "Highest generation count: " + highScore;
+  document.querySelector("#highscore").appendChild(newH2);
+  let newBut = document.createElement("button");
+  newBut.textContent = "CLEAR HIGHEST COUNT";
+  newBut.addEventListener("click", clearHighScore);
+  document.querySelector("#highscore").appendChild(newBut);
+}
+
+function endGamePuz() {
   if (timer !== 0) {
     clearInterval(timer);
     timer = 0;
@@ -401,7 +441,7 @@ function saveGameForPlayer() {
 }
 
 function createAndDisplayAllSavedElements() {
-  document.querySelector("#saved-games-header").textContent = "Saved games:";
+  document.querySelector("#saved-games-header").textContent = "Saved patterns:";
   savedGamesDiv.innerHTML = "";
   if (savedGame2DArr.length > 0) {
     for (let i = 0; i < savedGame2DArr.length; i++) {
@@ -414,7 +454,7 @@ function createAndDisplayAllSavedElements() {
       document.getElementById("saved-games").appendChild(newGame);
     }
     let clearButton = document.createElement("button");
-    clearButton.textContent = "CLEAR ALL SAVED GAMES";
+    clearButton.textContent = "CLEAR ALL SAVED PATTERNS";
     clearButton.classList.add("sandbox");
     clearButton.addEventListener("click", clearAllSavedGames);
     document.getElementById("saved-games").appendChild(clearButton);
@@ -430,6 +470,31 @@ function loadSavedGame(event) {
 function clearAllSavedGames() {
   window.localStorage.removeItem("savedGames");
   savedGamesDiv.innerHTML = "";
+}
+
+function clearHighScore() {
+  document.querySelector("#highscore").innerHTML = "";
+  window.localStorage.removeItem("highScore");
+  highScore = 0;
+}
+
+function randomBoard(event) {
+  for (let x = 0; x < currentBoardSize; x++) {
+    for (let y = 0; y < currentBoardSize; y++) {
+      let cellId = x + "-" + y;
+      let randomNum = Math.floor(Math.random() * 5);
+      //console.log(cellId);
+      if (randomNum === 2 || randomNum === 3) {
+        document.getElementById(cellId).classList.remove(DEAD);
+        document.getElementById(cellId).classList.add(ALIVE);
+        gamePlayArr[x][y] = ALIVE;
+      } else {
+        document.getElementById(cellId).classList.remove(ALIVE);
+        document.getElementById(cellId).classList.add(DEAD);
+        gamePlayArr[x][y] = DEAD;
+      }
+    }
+  }
 }
 
 initQuestionButton();
