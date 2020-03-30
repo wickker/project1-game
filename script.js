@@ -96,6 +96,7 @@ function changeMode(event) {
     gameBoardDiv.style.width = boardSizeDimension + "px";
     document.getElementById("center").style.width = boardSizeDimension + "px";
     qnsTextSelector.textContent = "";
+    savedGamesDiv.innerHTML = "";
     clearBoardForPuz();
   }
 }
@@ -401,8 +402,8 @@ function saveGameForPlayer() {
 
 function createAndDisplayAllSavedElements() {
   document.querySelector("#saved-games-header").textContent = "Saved games:";
+  savedGamesDiv.innerHTML = "";
   if (savedGame2DArr.length > 0) {
-    savedGamesDiv.innerHTML = "";
     for (let i = 0; i < savedGame2DArr.length; i++) {
       let newGame = document.createElement("p");
       newGame.textContent = savedGame2DArr[i][1];
@@ -412,14 +413,11 @@ function createAndDisplayAllSavedElements() {
       newGame.addEventListener("click", loadSavedGame);
       document.getElementById("saved-games").appendChild(newGame);
     }
-  } else {
-    let newGame = document.createElement("p");
-    newGame.textContent = gameName;
-    newGame.id = gameName;
-    newGame.classList.add("sandbox");
-    newGame.classList.add("savedgamelist");
-    newGame.addEventListener("click", loadSavedGame);
-    document.getElementById("saved-games").appendChild(newGame);
+    let clearButton = document.createElement("button");
+    clearButton.textContent = "CLEAR ALL SAVED GAMES";
+    clearButton.classList.add("sandbox");
+    clearButton.addEventListener("click", clearAllSavedGames);
+    document.getElementById("saved-games").appendChild(clearButton);
   }
 }
 
@@ -427,6 +425,11 @@ function loadSavedGame(event) {
   let idArr = event.target.id.split(". ");
   let arrayIndex = parseInt(idArr[0]);
   printAndPushArrayToGameBoard(savedGame2DArr[arrayIndex][0]);
+}
+
+function clearAllSavedGames() {
+  window.localStorage.removeItem("savedGames");
+  savedGamesDiv.innerHTML = "";
 }
 
 initQuestionButton();

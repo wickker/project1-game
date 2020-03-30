@@ -40,6 +40,10 @@ div {
   border: solid black 0.5px;
 }
 
+#saved-games {
+  text-align: center;
+}
+
 .savedgamelist {
   color: blue;
   text-decoration: underline;
