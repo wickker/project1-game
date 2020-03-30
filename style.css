@@ -6,7 +6,7 @@ body {
   width: 400px;
 }
 
-#center, #inline-button {
+#center, .inline-button {
   width: 600px;
 }
 
@@ -22,9 +22,9 @@ body {
   align-items: center;
 }
 
-#inline-button {
+.inline-button {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 h3 {

@@ -3,19 +3,22 @@ let boardSizeDimension = 600;
 let targetFormDimension = 300;
 let gamePlayArr = [];
 let targetFormArr = [];
-let boardSize = 10;
+let boardSize = 30;
 let currentBoardSize;
 let gameProgressState = false;
 const ALIVE = "alive";
 const DEAD = "dead";
 let timer = 0;
 let generationCount = 0;
+const questionBank = puzzles;
 // let qnsBank = {};
 // let qnsClickCount = 1;
 // let qnsId = 1;
 let qnsProgressState = false;
 let totalQns = 6;
-let qnsText = {
+let gameModeState = "puz";
+const sandBoxPrompt = "Challenge yourself by creating a constantly evolving cell culture!";
+const qnsText = {
   q1:
     "Reach the target form in 2 clicks and 1 generation. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
   q2:
@@ -37,14 +40,63 @@ const startButtonSelector = document.querySelector("#start-button button");
 const endButtonSelector = document.querySelector("#end-button button");
 const clearButtonSelector = document.querySelector("#clear-button button");
 const saveButtonSelector = document.querySelector("#save-button button");
-const questionBank = puzzles;
 const targetFormDiv = document.getElementById("target-form-board");
 const qnsTextSelector = document.getElementById("qns-text");
 const winMsgSelector = document.getElementById("win-msg");
 const genCountNumSelector = document.getElementById("gen-count-num");
+const modeButtonSelector = document.querySelector("#toggle-button button");
+const gameModeSpan = document.getElementById("mode");
 
-//Initialize empty game board
-function initGameBoard(size) {
+function changeMode(event) {
+  generationCount = 0;
+  displayGenCount();
+  if (gameModeState === "puz") {
+    gameModeState = "sandbox";
+    gameModeSpan.textContent = "Sandbox";
+    let puzElements = document.getElementsByClassName("puz");
+    for (let i = 0; i < puzElements.length; i++) {
+      puzElements[i].classList.add("hidden");
+    }
+    let sandBoxElements = document.getElementsByClassName("sandbox");
+    for (let z = 0; z < sandBoxElements.length; z++) {
+      sandBoxElements[z].classList.remove("hidden");
+    }
+    targetFormDiv.innerHTML = "";
+    targetFormDimension = 0;
+    targetFormDiv.style.height = targetFormDimension + "px";
+    targetFormDiv.style.width = targetFormDimension + "px";
+    boardSizeDimension = 700;
+    gameBoardDiv.style.height = boardSizeDimension + "px";
+    gameBoardDiv.style.width = boardSizeDimension + "px";
+    document.getElementById("center").style.width = boardSizeDimension + "px";
+    qnsTextSelector.textContent = sandBoxPrompt;
+    clearBoardForSandBox();
+  }
+  else if (gameModeState === "sandbox") {
+    gameModeState = "puz";
+    gameModeSpan.textContent = "Puzzle";
+    let sandBoxElements = document.getElementsByClassName("sandbox");
+    for (let i = 0; i < sandBoxElements.length; i++) {
+      sandBoxElements[i].classList.add("hidden");
+    }
+    let puzElements = document.getElementsByClassName("puz");
+    for (let z = 0; z < puzElements.length; z++) {
+      puzElements[z].classList.remove("hidden");
+    }
+    targetFormDimension = 300;
+    targetFormDiv.style.height = targetFormDimension + "px";
+    targetFormDiv.style.width = targetFormDimension + "px";
+    boardSizeDimension = 600;
+    gameBoardDiv.style.height = boardSizeDimension + "px";
+    gameBoardDiv.style.width = boardSizeDimension + "px";
+    document.getElementById("center").style.width = boardSizeDimension + "px";
+    qnsTextSelector.textContent = "";
+    clearBoardForPuz();
+  }
+}
+
+//Initialize empty game board - PUZZLE MODE
+function initGameBoardPuz(size) {
   for (let x = 0; x < size; x++) {
     gamePlayArr.push([]);
     for (let y = 0; y < size; y++) {
@@ -61,7 +113,29 @@ function initGameBoard(size) {
   }
   startButtonSelector.addEventListener("click", playGame);
   endButtonSelector.addEventListener("click", endGame);
-  clearButtonSelector.addEventListener("click", clearBoard);
+  // clearButtonSelector.addEventListener("click", clearBoardForPuz);
+}
+
+//Initialize empty game board - SANDBOX MODE
+function initGameBoardSandBox(size) {
+  for (let x = 0; x < size; x++) {
+    gamePlayArr.push([]);
+    for (let y = 0; y < size; y++) {
+      gamePlayArr[x].push(DEAD);
+      let newCell = document.createElement("div");
+      newCell.className = "cell";
+      newCell.classList.add(DEAD);
+      newCell.id = x + "-" + y;
+      newCell.style.height = boardSizeDimension / size + "px";
+      newCell.style.width = boardSizeDimension / size + "px";
+      newCell.addEventListener("click", playerSetUp);
+      gameBoardDiv.appendChild(newCell);
+    }
+  }
+  currentBoardSize = size;
+  startButtonSelector.addEventListener("click", playGame);
+  endButtonSelector.addEventListener("click", endGame);
+  clearButtonSelector.addEventListener("click", clearBoardForSandBox);
 }
 
 //Initialize question buttons
@@ -70,6 +144,7 @@ function initQuestionButton() {
     let qnsSelector = document.getElementById("q" + i);
     qnsSelector.addEventListener("click", loadQns);
   }
+  modeButtonSelector.addEventListener("click", changeMode);
 }
 
 function loadQns(event) {
@@ -86,7 +161,7 @@ function loadQns(event) {
   currentBoardSize = questionBank[qnsNum].boardSize;
   console.log(currentBoardSize);
   qnsTextSelector.innerHTML = qnsText[event.target.id];
-  initGameBoard(currentBoardSize);
+  initGameBoardPuz(currentBoardSize);
   printAndPushArrayToGameBoard(questionBank[qnsNum].puzzle);
   loadTargetForm(qnsNum);
   generationCount = 0;
@@ -190,14 +265,26 @@ function endGame() {
   gameProgressState = false;
 }
 
-function clearBoard(event) {
+function clearBoardForPuz() {
   if (gameProgressState === true) {
     gameProgressState = false;
   }
   gameBoardDiv.innerHTML = "";
   gamePlayArr = [];
   winMsgSelector.innerHTML = "";
-  initGameBoard(currentBoardSize);
+  initQuestionButton();
+}
+
+function clearBoardForSandBox() {
+  if (gameProgressState === true) {
+    gameProgressState = false;
+  }
+  gameBoardDiv.innerHTML = "";
+  gamePlayArr = [];
+  winMsgSelector.innerHTML = "";
+  generationCount = 0;
+  displayGenCount();
+  initGameBoardSandBox(boardSize);
 }
 
 function checkWin() {
