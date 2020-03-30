@@ -48,10 +48,12 @@ const winMsgSelector = document.getElementById("win-msg");
 const genCountNumSelector = document.getElementById("gen-count-num");
 const modeButtonSelector = document.querySelector("#toggle-button button");
 const gameModeSpan = document.getElementById("mode");
+const savedGamesDiv = document.getElementById("saved-games");
 
 function changeMode(event) {
   generationCount = 0;
   displayGenCount();
+  //Change game mode to SANDBOX
   if (gameModeState === "puz") {
     gameModeState = "sandbox";
     gameModeSpan.textContent = "Sandbox";
@@ -73,7 +75,9 @@ function changeMode(event) {
     document.getElementById("center").style.width = boardSizeDimension + "px";
     qnsTextSelector.textContent = sandBoxPrompt;
     clearBoardForSandBox();
-  } else if (gameModeState === "sandbox") {
+    createAndDisplayAllSavedElements();
+  } //Change game mode to PUZZLE
+  else if (gameModeState === "sandbox") {
     gameModeState = "puz";
     gameModeSpan.textContent = "Puzzle";
     let sandBoxElements = document.getElementsByClassName("sandbox");
@@ -251,9 +255,11 @@ function playGame(event) {
   if (timer === 0) {
     timer = setInterval(playGame, 1000);
   }
-  if (checkWin()) {
-    endGame();
-    winMsgSelector.textContent = winMsg;
+  if (gameModeState === "puz") {
+    if (checkWin()) {
+      endGame();
+      winMsgSelector.textContent = winMsg;
+    }
   }
 }
 
@@ -386,24 +392,41 @@ function saveGameForPlayer() {
   dataArr.push(gamePlayArr);
   let newDate = new Date();
   gameName = prompt("Please name your file", newDate.getDate() + "-" + newDate.getMinutes());
+  gameName = savedGame2DArr.length + ". " + gameName;
   dataArr.push(gameName);
   savedGame2DArr.push(dataArr);
   localStorage.setItem("savedGames", JSON.stringify(savedGame2DArr));
+  createAndDisplayAllSavedElements();
+}
+
+function createAndDisplayAllSavedElements() {
   document.querySelector("#saved-games-header").textContent = "Saved games:";
-  createAndDisplaySavedElements();
+  if (savedGame2DArr.length > 0) {
+    savedGamesDiv.innerHTML = "";
+    for (let i = 0; i < savedGame2DArr.length; i++) {
+      let newGame = document.createElement("p");
+      newGame.textContent = savedGame2DArr[i][1];
+      newGame.id = savedGame2DArr[i][1];
+      newGame.classList.add("sandbox");
+      newGame.classList.add("savedgamelist");
+      newGame.addEventListener("click", loadSavedGame);
+      document.getElementById("saved-games").appendChild(newGame);
+    }
+  } else {
+    let newGame = document.createElement("p");
+    newGame.textContent = gameName;
+    newGame.id = gameName;
+    newGame.classList.add("sandbox");
+    newGame.classList.add("savedgamelist");
+    newGame.addEventListener("click", loadSavedGame);
+    document.getElementById("saved-games").appendChild(newGame);
+  }
 }
 
-function createAndDisplaySavedElements() {
-  let newGame = document.createElement("p");
-  newGame.textContent = gameName;
-  newGame.classList.add("sandbox");
-  newGame.classList.add("savedgamelist");
-  newGame.addEventListener("click", loadSavedGame);
-  document.getElementById("saved-games").appendChild(newGame);
-}
-
-function loadSavedGame() {
-  
+function loadSavedGame(event) {
+  let idArr = event.target.id.split(". ");
+  let arrayIndex = parseInt(idArr[0]);
+  printAndPushArrayToGameBoard(savedGame2DArr[arrayIndex][0]);
 }
 
 initQuestionButton();
