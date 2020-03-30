@@ -9,18 +9,25 @@ let gameProgressState = false;
 const ALIVE = "alive";
 const DEAD = "dead";
 let timer = 0;
+let generationCount = 0;
 // let qnsBank = {};
 // let qnsClickCount = 1;
 // let qnsId = 1;
 let qnsProgressState = false;
 let totalQns = 6;
 let qnsText = {
-  q1: "Reach the target form in 2 clicks and 1 generation. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
-  q2: "Reach the target form in 2 clicks and 1 generation. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
-  q3: "Reach the target form in 2 clicks and 4 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
-  q4: "Reach the target form in 2 clicks and 4 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
-  q5: "Reach the target form in 4 clicks and 2 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
-  q6: "Reach the target form in 2 clicks and 5 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations."
+  q1:
+    "Reach the target form in 2 clicks and 1 generation. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q2:
+    "Reach the target form in 2 clicks and 1 generation. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q3:
+    "Reach the target form in 2 clicks and 4 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q4:
+    "Reach the target form in 2 clicks and 4 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q5:
+    "Reach the target form in 4 clicks and 2 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  q6:
+    "Reach the target form in 2 clicks and 5 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations."
 };
 let winMsg = "You found a match!";
 
@@ -34,6 +41,7 @@ const questionBank = puzzles;
 const targetFormDiv = document.getElementById("target-form-board");
 const qnsTextSelector = document.getElementById("qns-text");
 const winMsgSelector = document.getElementById("win-msg");
+const genCountNumSelector = document.getElementById("gen-count-num");
 
 //Initialize empty game board
 function initGameBoard(size) {
@@ -81,18 +89,9 @@ function loadQns(event) {
   initGameBoard(currentBoardSize);
   printAndPushArrayToGameBoard(questionBank[qnsNum].puzzle);
   loadTargetForm(qnsNum);
+  generationCount = 0;
+  displayGenCount();
   qnsProgressState = true;
-}
-
-function checkWin() {
-  for (let x = 0; x < currentBoardSize; x++) {
-    for (let y = 0; y < currentBoardSize; y++) {
-      if (gamePlayArr[x][y] !== targetFormArr[x][y]) {
-        return false;
-      }
-    }
-  }
-  return true;
 }
 
 //Loads target form pattern on DOM and global array depending on selected question number; players may not ammend this pattern
@@ -168,6 +167,9 @@ function playGame(event) {
   }
   // console.log(gamePlayArr);
   printArrayToGameBoard(gamePlayArr);
+  generationCount++;
+  console.log(generationCount);
+  displayGenCount();
   //sets interval that playGame function is triggered and cells change state
   if (timer === 0) {
     timer = setInterval(playGame, 1000);
@@ -184,6 +186,7 @@ function endGame() {
     clearInterval(timer);
     timer = 0;
   }
+  generationCount = 0;
   gameProgressState = false;
 }
 
@@ -195,6 +198,17 @@ function clearBoard(event) {
   gamePlayArr = [];
   winMsgSelector.innerHTML = "";
   initGameBoard(currentBoardSize);
+}
+
+function checkWin() {
+  for (let x = 0; x < currentBoardSize; x++) {
+    for (let y = 0; y < currentBoardSize; y++) {
+      if (gamePlayArr[x][y] !== targetFormArr[x][y]) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 //Prints current gamePlayArr to DOM
@@ -214,6 +228,7 @@ function printArrayToGameBoard(arrayName) {
   }
 }
 
+//Copies puzzle configuration to gamePlayArr and then prints to DOM
 function printAndPushArrayToGameBoard(arrayName) {
   for (let x = 0; x < currentBoardSize; x++) {
     for (let y = 0; y < currentBoardSize; y++) {
@@ -271,6 +286,10 @@ function checkSurrEight(xCo, yCo) {
   }
   // console.log(checkingArray);
   return aliveCells;
+}
+
+function displayGenCount() {
+  genCountNumSelector.innerHTML = generationCount;
 }
 
 initQuestionButton();
