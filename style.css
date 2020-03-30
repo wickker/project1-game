@@ -40,6 +40,20 @@ div {
   border: solid black 0.5px;
 }
 
+#speed img {
+  height: 40px;
+  width: 40px;
+  margin-left: 5px;
+}
+
+#speed {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+}
+
 #saved-games, #highscore {
   text-align: center;
 }
@@ -55,7 +69,12 @@ div {
 
 button:hover {
   cursor: pointer;
-  box-shadow: 0 0 3px 0 gainsboro;
+  box-shadow: 0 0 10px 0 aqua;
+}
+
+img:hover {
+  cursor: pointer;
+  box-shadow: 0 0 10px 0 aqua;
 }
 
 .hidden {

@@ -1,4 +1,5 @@
 //Global variables
+let speed = 1000;
 let boardSizeDimension = 600;
 let targetFormDimension = 300;
 let gamePlayArr = [];
@@ -143,11 +144,14 @@ function initGameBoardSandBox(size) {
     }
   }
   currentBoardSize = size;
+  speed = 1000;
   startButtonSelector.addEventListener("click", playGame);
   endButtonSelector.addEventListener("click", endGameSandBox);
   clearButtonSelector.addEventListener("click", clearBoardForSandBox);
   saveButtonSelector.addEventListener("click", saveGameForPlayer);
   randomBoardSelector.addEventListener("click", randomBoard);
+  document.getElementById("dcr").addEventListener("click", decreaseSpeed);
+  document.getElementById("inc").addEventListener("click", increaseSpeed);
 }
 
 //Initialize question buttons
@@ -247,7 +251,7 @@ function playGame(event) {
       arrayCellDetails.push(cellObj);
     }
   }
-  console.log(arrayCellDetails);
+  // console.log(arrayCellDetails);
   //Based on live cell count, modifies cell state according to Conway GOL rules
   for (let i = 0; i < arrayCellDetails.length; i++) {
     if (arrayCellDetails[i].state === ALIVE) {
@@ -263,11 +267,11 @@ function playGame(event) {
   // console.log(gamePlayArr);
   printArrayToGameBoard(gamePlayArr);
   generationCount++;
-  console.log(generationCount);
+  // console.log(generationCount);
   displayGenCount();
   //sets interval that playGame function is triggered and cells change state
   if (timer === 0) {
-    timer = setInterval(playGame, 1000);
+    timer = setInterval(playGame, speed);
   }
   if (gameModeState === "puz") {
     if (checkWin()) {
@@ -494,6 +498,30 @@ function randomBoard(event) {
         gamePlayArr[x][y] = DEAD;
       }
     }
+  }
+}
+
+function increaseSpeed() {
+  speed -= 200;
+  console.log(speed);
+  if (timer !== 0) {
+    clearInterval(timer);
+    timer = 0;
+  }
+  else if (timer === 0) {
+    timer = setInterval(playGame, speed);
+  }
+}
+
+function decreaseSpeed() {
+  speed += 200;
+  console.log(speed);
+  if (timer !== 0) {
+    clearInterval(timer);
+    timer = 0;
+  }
+  else if (timer === 0) {
+    timer = setInterval(playGame, speed);
   }
 }
 
