@@ -11,6 +11,8 @@ const DEAD = "dead";
 let timer = 0;
 let generationCount = 0;
 const questionBank = puzzles;
+let savedGame2DArr = JSON.parse(window.localStorage.getItem("savedGames")) || [];
+let gameName;
 // let qnsBank = {};
 // let qnsClickCount = 1;
 // let qnsId = 1;
@@ -71,8 +73,7 @@ function changeMode(event) {
     document.getElementById("center").style.width = boardSizeDimension + "px";
     qnsTextSelector.textContent = sandBoxPrompt;
     clearBoardForSandBox();
-  }
-  else if (gameModeState === "sandbox") {
+  } else if (gameModeState === "sandbox") {
     gameModeState = "puz";
     gameModeSpan.textContent = "Puzzle";
     let sandBoxElements = document.getElementsByClassName("sandbox");
@@ -136,6 +137,7 @@ function initGameBoardSandBox(size) {
   startButtonSelector.addEventListener("click", playGame);
   endButtonSelector.addEventListener("click", endGame);
   clearButtonSelector.addEventListener("click", clearBoardForSandBox);
+  saveButtonSelector.addEventListener("click", saveGameForPlayer);
 }
 
 //Initialize question buttons
@@ -377,6 +379,31 @@ function checkSurrEight(xCo, yCo) {
 
 function displayGenCount() {
   genCountNumSelector.innerHTML = generationCount;
+}
+
+function saveGameForPlayer() {
+  let dataArr = [];
+  dataArr.push(gamePlayArr);
+  let newDate = new Date();
+  gameName = prompt("Please name your file", newDate.getDate() + "-" + newDate.getMinutes());
+  dataArr.push(gameName);
+  savedGame2DArr.push(dataArr);
+  localStorage.setItem("savedGames", JSON.stringify(savedGame2DArr));
+  document.querySelector("#saved-games-header").textContent = "Saved games:";
+  createAndDisplaySavedElements();
+}
+
+function createAndDisplaySavedElements() {
+  let newGame = document.createElement("p");
+  newGame.textContent = gameName;
+  newGame.classList.add("sandbox");
+  newGame.classList.add("savedgamelist");
+  newGame.addEventListener("click", loadSavedGame);
+  document.getElementById("saved-games").appendChild(newGame);
+}
+
+function loadSavedGame() {
+  
 }
 
 initQuestionButton();
