@@ -4,7 +4,7 @@ let boardSizeDimension = 600;
 let targetFormDimension = 300;
 let gamePlayArr = [];
 let targetFormArr = [];
-let boardSize = 30;
+let boardSize = 40;
 let currentBoardSize;
 let gameProgressState = false;
 const ALIVE = "alive";
@@ -73,11 +73,12 @@ function changeMode(event) {
     targetFormDimension = 0;
     targetFormDiv.style.height = targetFormDimension + "px";
     targetFormDiv.style.width = targetFormDimension + "px";
-    boardSizeDimension = 700;
+    boardSizeDimension = 800;
     gameBoardDiv.style.height = boardSizeDimension + "px";
     gameBoardDiv.style.width = boardSizeDimension + "px";
     document.getElementById("center").style.width = boardSizeDimension + "px";
     qnsTextSelector.innerHTML = sandBoxPrompt;
+    endButtonSelector.textContent = "PAUSE GAME";
     clearBoardForSandBox();
     createAndDisplayAllSavedElements();
     if (highScore !== 0) {
@@ -307,10 +308,23 @@ function endGameSandBox() {
   gameProgressState = false;
 }
 
+function clearBoardForSandBox() {
+  // if (gameProgressState === true) {
+  //   gameProgressState = false;
+  // }
+  endGameSandBox();
+  gameBoardDiv.innerHTML = "";
+  gamePlayArr = [];
+  winMsgSelector.innerHTML = "";
+  generationCount = 0;
+  displayGenCount();
+  initGameBoardSandBox(boardSize);
+}
+
 function displayHighScoreAndClearButton() {
   document.querySelector("#highscore").innerHTML = "";
   let newH2 = document.createElement("h2");
-  newH2.textContent = "Highest generation count: " + highScore;
+  newH2.textContent = "Highest Generation Count: " + highScore;
   document.querySelector("#highscore").appendChild(newH2);
   let newBut = document.createElement("button");
   newBut.textContent = "CLEAR HIGHEST COUNT";
@@ -337,17 +351,7 @@ function clearBoardForPuz() {
   initQuestionButton();
 }
 
-function clearBoardForSandBox() {
-  if (gameProgressState === true) {
-    gameProgressState = false;
-  }
-  gameBoardDiv.innerHTML = "";
-  gamePlayArr = [];
-  winMsgSelector.innerHTML = "";
-  generationCount = 0;
-  displayGenCount();
-  initGameBoardSandBox(boardSize);
-}
+
 
 function checkWin() {
   for (let x = 0; x < currentBoardSize; x++) {
@@ -445,7 +449,7 @@ function saveGameForPlayer() {
   let dataArr = [];
   dataArr.push(gamePlayArr);
   let newDate = new Date();
-  gameName = prompt("Please name your file", newDate.getDate() + "-" + newDate.getMinutes());
+  gameName = prompt("Please input file name", newDate.getDate() + "-" + newDate.getMinutes());
   gameName = savedGame2DArr.length + ". " + gameName;
   dataArr.push(gameName);
   savedGame2DArr.push(dataArr);
@@ -454,7 +458,7 @@ function saveGameForPlayer() {
 }
 
 function createAndDisplayAllSavedElements() {
-  document.querySelector("#saved-games-header").textContent = "Saved patterns:";
+  document.querySelector("#saved-games-header").textContent = "Saved Patterns:";
   savedGamesDiv.innerHTML = "";
   if (savedGame2DArr.length > 0) {
     for (let i = 0; i < savedGame2DArr.length; i++) {
@@ -482,6 +486,7 @@ function loadSavedGame(event) {
 
 function clearAllSavedGames() {
   window.localStorage.removeItem("savedGames");
+  savedGame2DArr = [];
   savedGamesDiv.innerHTML = "";
 }
 

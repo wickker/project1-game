@@ -23,7 +23,7 @@ body {
 
 #highscore {
   position: relative;
-  bottom: 395px;
+  bottom: 355px;
 }
 
 .col {
@@ -80,8 +80,20 @@ h2 {
   /* text-decoration: underline; */
 }
 
-#left > button {
+#left > button, #saved-games > p {
   font-size: 18px;
+}
+
+/* #save-button {
+margin-top: 10px;
+} */
+
+#saved-games > button {
+  margin-top: 10px;
+}
+
+#highscore > h2 {
+  margin-bottom: 10px;
 }
 
 button {
@@ -97,6 +109,7 @@ button {
 .inline-button {
   display: flex;
   justify-content: space-evenly;
+  width: 100%;
 }
 
 h3 {
@@ -135,7 +148,18 @@ div {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 250px;
+  width: 100%
+}
+
+#speed > p {
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #4e4e50;
+}
+
+#gen-count {
+  margin-top: 50px;
 }
 
 #saved-games,
