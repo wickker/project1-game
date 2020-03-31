@@ -508,7 +508,7 @@ function increaseSpeed() {
     clearInterval(timer);
     timer = 0;
   }
-  else if (timer === 0) {
+  if (timer === 0) {
     timer = setInterval(playGame, speed);
   }
 }
@@ -520,7 +520,7 @@ function decreaseSpeed() {
     clearInterval(timer);
     timer = 0;
   }
-  else if (timer === 0) {
+  if (timer === 0) {
     timer = setInterval(playGame, speed);
   }
 }
