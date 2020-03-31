@@ -496,6 +496,7 @@ function clearHighScore() {
 
 //Generates a random game play board
 function randomBoard(event) {
+  clearBoardForSandBox();
   for (let x = 0; x < currentBoardSize; x++) {
     for (let y = 0; y < currentBoardSize; y++) {
       let cellId = x + "-" + y;
