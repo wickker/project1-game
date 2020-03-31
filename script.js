@@ -15,29 +15,21 @@ const questionBank = puzzles;
 let savedGame2DArr = JSON.parse(window.localStorage.getItem("savedGames")) || [];
 let gameName;
 let highScore = JSON.parse(window.localStorage.getItem("highScore")) || 0;
-// let qnsBank = {};
-// let qnsClickCount = 1;
-// let qnsId = 1;
 let qnsProgressState = false;
-let totalQns = 6;
 let boardChanges = 0;
 let gameModeState = "puz";
+
+//Text output variables
 const sandBoxPrompt = "Challenge yourself by creating a constantly evolving cell culture!";
 const qnsText = {
-  q1:
-    "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.",
-  q2:
-  "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.",
-  q3:
-  "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.",
-  q4:
-  "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.",
-  q5:
-  "Q: Reach the TARGET FORM in <u>4 CLICKS</u> and <u>2 GENERATIONS</u>.",
-  q6:
-  "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>5 GENERATIONS</u>."
+  q1: "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.",
+  q2: "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.",
+  q3: "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.",
+  q4: "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.",
+  q5: "Q: Reach the TARGET FORM in <u>4 CLICKS</u> and <u>2 GENERATIONS</u>.",
+  q6: "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>5 GENERATIONS</u>."
 };
-let winMsg = "You found a match!";
+const winMsg = "You found a match!";
 
 //DOM GET variables
 const gameBoardDiv = document.getElementById("game-board");
@@ -54,6 +46,7 @@ const gameModeSpan = document.getElementById("mode");
 const savedGamesDiv = document.getElementById("saved-games");
 const randomBoardSelector = document.querySelector("#random-board-button button");
 
+//Switches between PUZZLE and SANDBOX mode
 function changeMode(event) {
   generationCount = 0;
   displayGenCount();
@@ -61,6 +54,7 @@ function changeMode(event) {
   if (gameModeState === "puz") {
     gameModeState = "sandbox";
     gameModeSpan.textContent = "Sandbox";
+    //Toggling display property of PUZZLE and SANDBOX elements
     let puzElements = document.getElementsByClassName("puz");
     for (let i = 0; i < puzElements.length; i++) {
       puzElements[i].classList.add("hidden");
@@ -69,6 +63,7 @@ function changeMode(event) {
     for (let z = 0; z < sandBoxElements.length; z++) {
       sandBoxElements[z].classList.remove("hidden");
     }
+    //Change dimensions of game board
     targetFormDiv.innerHTML = "";
     targetFormDimension = 0;
     targetFormDiv.style.height = targetFormDimension + "px";
@@ -88,6 +83,7 @@ function changeMode(event) {
   else if (gameModeState === "sandbox") {
     gameModeState = "puz";
     gameModeSpan.textContent = "Puzzle";
+    //Toggling display property of PUZZLE and SANDBOX elements
     let sandBoxElements = document.getElementsByClassName("sandbox");
     for (let i = 0; i < sandBoxElements.length; i++) {
       sandBoxElements[i].classList.add("hidden");
@@ -96,6 +92,7 @@ function changeMode(event) {
     for (let z = 0; z < puzElements.length; z++) {
       puzElements[z].classList.remove("hidden");
     }
+    //Change dimensions of game board
     targetFormDimension = 300;
     targetFormDiv.style.height = targetFormDimension + "px";
     targetFormDiv.style.width = targetFormDimension + "px";
@@ -109,7 +106,7 @@ function changeMode(event) {
   }
 }
 
-//Initialize empty game board - PUZZLE MODE
+//Initialize empty game board for PUZZLE MODE
 function initGameBoardPuz(size) {
   for (let x = 0; x < size; x++) {
     gamePlayArr.push([]);
@@ -129,7 +126,7 @@ function initGameBoardPuz(size) {
   endButtonSelector.addEventListener("click", endGamePuz);
 }
 
-//Initialize empty game board - SANDBOX MODE
+//Initialize empty game board for SANDBOX MODE
 function initGameBoardSandBox(size) {
   for (let x = 0; x < size; x++) {
     gamePlayArr.push([]);
@@ -156,13 +153,14 @@ function initGameBoardSandBox(size) {
   document.getElementById("inc").addEventListener("click", increaseSpeed);
 }
 
-//Initialize question buttons
+//Initialize question buttons for PUZZLE MODE
 function initQuestionButton() {
-  for (let i = 1; i < totalQns + 1; i++) {
+  for (let i = 1; i < 7; i++) {
     let qnsSelector = document.getElementById("q" + i);
     qnsSelector.addEventListener("click", loadQns);
   }
   modeButtonSelector.addEventListener("click", changeMode);
+  //Ensures that the right elements are being displayed
   let sandBoxElements = document.getElementsByClassName("sandbox");
   for (let i = 0; i < sandBoxElements.length; i++) {
     sandBoxElements[i].classList.add("hidden");
@@ -173,7 +171,9 @@ function initQuestionButton() {
   }
 }
 
+//Load questions for PUZZLE MODE
 function loadQns(event) {
+  //If a question has already been selected
   if (qnsProgressState === true) {
     gameBoardDiv.innerHTML = "";
     targetFormDiv.innerHTML = "";
@@ -182,10 +182,9 @@ function loadQns(event) {
     targetFormArr = [];
     qnsProgressState = false;
   }
+  //Use selected question number to generate Puzzle and Target Form from PUZZLES.JS object
   let qnsNum = parseInt(event.target.id.slice(-1));
-  console.log(qnsNum);
   currentBoardSize = questionBank[qnsNum].boardSize;
-  console.log(currentBoardSize);
   qnsTextSelector.innerHTML = qnsText[event.target.id];
   initGameBoardPuz(currentBoardSize);
   printAndPushArrayToGameBoard(questionBank[qnsNum].puzzle);
@@ -193,12 +192,13 @@ function loadQns(event) {
   generationCount = 0;
   displayGenCount();
   qnsProgressState = true;
+  //Ensures that gameplay is halted each time a new question is selected
   if (gameProgressState === true) {
     endGamePuz();
   }
 }
 
-//Loads target form pattern on DOM and global array depending on selected question number; players may not ammend this pattern
+//Loads Target Form pattern on DOM and updates targetFormArr depending on selected question number; players may not ammend this pattern
 function loadTargetForm(num) {
   for (let x = 0; x < questionBank[num].boardSize; x++) {
     targetFormArr.push([]);
@@ -220,7 +220,7 @@ function loadTargetForm(num) {
   }
 }
 
-//Lets player set up initial DEAD or ALIVE state of game board
+//Lets player set up OR edit initial DEAD or ALIVE state of game board
 function playerSetUp(event) {
   //Only functions when game is not in progress
   if (gameProgressState === false) {
@@ -237,7 +237,6 @@ function playerSetUp(event) {
       event.target.classList.remove(DEAD);
       event.target.classList.add(ALIVE);
     }
-    console.log(gamePlayArr);
   }
 }
 
@@ -257,7 +256,6 @@ function playGame(event) {
     }
   }
   boardChanges = 0;
-  // console.log(arrayCellDetails);
   //Based on live cell count, modifies cell state according to Conway GOL rules
   for (let i = 0; i < arrayCellDetails.length; i++) {
     if (arrayCellDetails[i].state === ALIVE) {
@@ -272,24 +270,24 @@ function playGame(event) {
       }
     }
   }
-  // console.log(gamePlayArr);
   printArrayToGameBoard(gamePlayArr);
   if (boardChanges !== 0) {
     generationCount++;
   }
-  // console.log(generationCount);
   displayGenCount();
-  //sets interval that playGame function is triggered and cells change state
+  //sets interval that playGame function is triggered
   if (timer === 0) {
     timer = setInterval(playGame, speed);
   }
   if (gameModeState === "puz") {
+    //Checks for win and responds with winMsg if there is a match
     if (checkWin()) {
       endGamePuz();
       winMsgSelector.textContent = winMsg;
     }
   }
   if (gameModeState === "sandbox") {
+    //Updates generation count high score
     if (generationCount > highScore) {
       highScore = generationCount;
       localStorage.setItem("highScore", JSON.stringify(highScore));
@@ -298,7 +296,7 @@ function playGame(event) {
   }
 }
 
-//Clears interval and freezes game board, allowing player to change cell configuration
+//Pauses the game, enabling edits to cell configuration
 function endGameSandBox() {
   if (timer !== 0) {
     clearInterval(timer);
@@ -308,10 +306,8 @@ function endGameSandBox() {
   gameProgressState = false;
 }
 
+//Stops the game and clears game board
 function clearBoardForSandBox() {
-  // if (gameProgressState === true) {
-  //   gameProgressState = false;
-  // }
   endGameSandBox();
   gameBoardDiv.innerHTML = "";
   gamePlayArr = [];
@@ -321,6 +317,7 @@ function clearBoardForSandBox() {
   initGameBoardSandBox(boardSize);
 }
 
+//Displays highest generation count and enables clear function
 function displayHighScoreAndClearButton() {
   document.querySelector("#highscore").innerHTML = "";
   let newH2 = document.createElement("h2");
@@ -351,8 +348,7 @@ function clearBoardForPuz() {
   initQuestionButton();
 }
 
-
-
+//For PUZZLEMODE
 function checkWin() {
   for (let x = 0; x < currentBoardSize; x++) {
     for (let y = 0; y < currentBoardSize; y++) {
@@ -364,12 +360,11 @@ function checkWin() {
   return true;
 }
 
-//Prints current gamePlayArr to DOM
+//Prints selected array to DOM, but does not push any data into an array variable
 function printArrayToGameBoard(arrayName) {
   for (let x = 0; x < currentBoardSize; x++) {
     for (let y = 0; y < currentBoardSize; y++) {
       let cellId = x + "-" + y;
-      //console.log(cellId);
       if (arrayName[x][y] === ALIVE) {
         document.getElementById(cellId).classList.remove(DEAD);
         document.getElementById(cellId).classList.add(ALIVE);
@@ -381,12 +376,11 @@ function printArrayToGameBoard(arrayName) {
   }
 }
 
-//Copies puzzle configuration to gamePlayArr and then prints to DOM
+//Copies selected array to gamePlayArr and then prints to DOM
 function printAndPushArrayToGameBoard(arrayName) {
   for (let x = 0; x < currentBoardSize; x++) {
     for (let y = 0; y < currentBoardSize; y++) {
       let cellId = x + "-" + y;
-      //console.log(cellId);
       if (arrayName[x][y] === ALIVE) {
         document.getElementById(cellId).classList.remove(DEAD);
         document.getElementById(cellId).classList.add(ALIVE);
@@ -400,7 +394,7 @@ function printAndPushArrayToGameBoard(arrayName) {
   }
 }
 
-//Modifies x coordinate if on the edge
+//Modifies x coordinate if on game board edge
 function getX(x) {
   if (x === -1) {
     x = currentBoardSize - 1;
@@ -410,7 +404,7 @@ function getX(x) {
   return x;
 }
 
-//Modifies y coordinate if on the edge
+//Modifies y coordinate if on game board edge
 function getY(y) {
   if (y === -1) {
     y = currentBoardSize - 1;
@@ -437,7 +431,6 @@ function checkSurrEight(xCo, yCo) {
       aliveCells++;
     }
   }
-  // console.log(checkingArray);
   return aliveCells;
 }
 
@@ -445,10 +438,12 @@ function displayGenCount() {
   genCountNumSelector.innerHTML = generationCount;
 }
 
+//Saves current game board configuration to local storage
 function saveGameForPlayer() {
   let dataArr = [];
   dataArr.push(gamePlayArr);
   let newDate = new Date();
+  //Allows player to rename saved file
   gameName = prompt("Please input file name", newDate.getDate() + "-" + newDate.getMinutes());
   gameName = savedGame2DArr.length + ". " + gameName;
   dataArr.push(gameName);
@@ -457,6 +452,7 @@ function saveGameForPlayer() {
   createAndDisplayAllSavedElements();
 }
 
+//Displays all currently saved files
 function createAndDisplayAllSavedElements() {
   document.querySelector("#saved-games-header").textContent = "Saved Patterns:";
   savedGamesDiv.innerHTML = "";
@@ -470,6 +466,7 @@ function createAndDisplayAllSavedElements() {
       newGame.addEventListener("click", loadSavedGame);
       document.getElementById("saved-games").appendChild(newGame);
     }
+    //Allows player to clear local storage of saved patterns
     let clearButton = document.createElement("button");
     clearButton.textContent = "CLEAR ALL SAVED PATTERNS";
     clearButton.classList.add("sandbox");
@@ -490,12 +487,14 @@ function clearAllSavedGames() {
   savedGamesDiv.innerHTML = "";
 }
 
+//Allows user to reset Highest Generation Count
 function clearHighScore() {
   document.querySelector("#highscore").innerHTML = "";
   window.localStorage.removeItem("highScore");
   highScore = 0;
 }
 
+//Generates a random game play board
 function randomBoard(event) {
   for (let x = 0; x < currentBoardSize; x++) {
     for (let y = 0; y < currentBoardSize; y++) {
@@ -517,7 +516,6 @@ function randomBoard(event) {
 
 function increaseSpeed() {
   speed -= 200;
-  console.log(speed);
   if (timer !== 0) {
     clearInterval(timer);
     timer = 0;
@@ -529,7 +527,6 @@ function increaseSpeed() {
 
 function decreaseSpeed() {
   speed += 200;
-  console.log(speed);
   if (timer !== 0) {
     clearInterval(timer);
     timer = 0;
@@ -540,29 +537,3 @@ function decreaseSpeed() {
 }
 
 initQuestionButton();
-
-// function saveGameForQns() {
-//   if (gameProgressState === false) {
-//     if (qnsClickCount === 1) {
-//       qnsBank[qnsId] = {};
-//       qnsBank[qnsId].answer = JSON.parse(JSON.stringify(gamePlayArr));
-//       qnsClickCount++;
-//     }
-//     else if (qnsClickCount === 2) {
-//       qnsBank[qnsId].puzzle = JSON.parse(JSON.stringify(gamePlayArr));
-//       qnsClickCount++;
-//     }
-//     else if (qnsClickCount === 3) {
-//       console.log(gamePlayArr);
-//       qnsBank[qnsId].finalForm = JSON.parse(JSON.stringify(gamePlayArr));
-//       qnsClickCount++;
-//     }
-//     else if (qnsClickCount === 4) {
-//       qnsBank[qnsId].boardSize = boardSize;
-//       qnsClickCount = 1;
-//       qnsId++;
-//     }
-//   }
-//   console.log(qnsBank);
-//   localStorage.setItem("GOLQnsBank", JSON.stringify(qnsBank));
-// }

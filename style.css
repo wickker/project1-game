@@ -1,6 +1,10 @@
 body {
   font-family: "Raleway", sans-serif;
   margin: 0;
+  background-image: url("https://www.itl.cat/pngfile/big/223-2230023_kimi-no-na-wa-gif.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.95;
 }
 
 #left,
@@ -34,15 +38,12 @@ body {
 }
 
 h1 {
-  font-family: "Raleway", sans-serif;
-  margin-top: 12px;
-  margin-bottom: 12px;
+  margin: 12px, 0;
   font-size: 40px;
   letter-spacing: 2px;
 }
 
 h2 {
-  font-family: "Raleway", sans-serif;
   letter-spacing: 2px;
   margin-top: 0;
   margin-bottom: 20px;
@@ -53,12 +54,11 @@ h2 {
   margin: 0;
 }
 
-#center h2 {
+#center > h2 {
   margin-bottom: 5px;
 }
 
 #qns-text {
-  font-family: "Raleway", sans-serif;
   width: 100%;
   padding: 0;
   font-size: 15px;
@@ -74,7 +74,6 @@ h2 {
 }
 
 #qns {
-  font-size: 18px;
   width: 100%;
   color: white;
   background-color: #A45C5E;
@@ -87,16 +86,20 @@ h2 {
 #left > h2 {
   margin: 0;
   margin-top: 80px;
-  /* text-decoration: underline; */
 }
 
-#left > button, #saved-games > p {
+#left > button, #saved-games > p, #qns {
   font-size: 18px;
 }
 
-/* #save-button {
-margin-top: 10px;
-} */
+#win-msg {
+  margin-top: 10px;
+  font-size: 25px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #27549B;
+}
 
 #saved-games > button {
   margin-top: 10px;
@@ -132,7 +135,7 @@ h3 {
 }
 
 ul {
-  margin: 10px 5px 10px 5px;
+  margin: 10px 5px;
   letter-spacing: 1px;
   font-size: 15px;
   text-align: justify;
@@ -177,6 +180,7 @@ li {
 .savedgamelist {
   color: blue;
   text-decoration: underline;
+  font-weight: bold;
 }
 
 .savedgamelist:hover {
@@ -185,12 +189,11 @@ li {
 
 button:hover {
   cursor: pointer;
-  /* box-shadow: 0 0 10px 0 aqua; */
 }
 
 img:hover {
   cursor: pointer;
-  /* box-shadow: 0 0 10px 0 aqua; */
+  border: solid 2px darkblue;
 }
 
 .hidden {
