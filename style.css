@@ -1,23 +1,29 @@
 body {
-  font-family: 'Quicksand', sans-serif;
+  font-family: "Raleway", sans-serif;
+  margin: 0;
 }
 
-#left, #right {
+#left,
+#right {
   width: 400px;
+  background-color: #d8c3a5;
 }
 
-#center, .inline-button {
+#center,
+.inline-button {
   width: 600px;
+  background-color: #eae7dc;
 }
 
 #main {
   display: flex;
   justify-content: center;
+  margin: 0;
 }
 
 #highscore {
   position: relative;
-  bottom: 470px;
+  bottom: 395px;
 }
 
 .col {
@@ -27,17 +33,95 @@ body {
   align-items: center;
 }
 
+h1 {
+  font-family: "Raleway", sans-serif;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  font-size: 40px;
+  letter-spacing: 2px;
+}
+
+h2 {
+  font-family: "Raleway", sans-serif;
+  letter-spacing: 2px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #4e4e50;
+}
+
+#right > h2 {
+  margin: 0;
+}
+
+#center h2 {
+  margin-bottom: 5px;
+}
+
+#qns-text {
+  font-family: "Raleway", sans-serif;
+  padding: 0 10px 10px 10px;
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-align: justify;
+  color: black;
+}
+
+#qns-text > p {
+  font-size: 18px;
+  margin: 10px 0 0 0;
+  color: #123C69;
+  font-weight: 500;
+  font-style: italic;
+}
+
+#left > h2 {
+  margin: 0;
+  margin-top: 80px;
+  /* text-decoration: underline; */
+}
+
+#left > button {
+  font-size: 18px;
+}
+
+button {
+  font-family: "Raleway", sans-serif;
+  letter-spacing: 1px;
+  background-color: #edc7b7;
+  font-size: 13.5px;
+  padding: 4px 20px;
+  box-sizing: border-box;
+  border: solid cornsilk 2px;
+}
+
 .inline-button {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
 
 h3 {
   text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  margin-top: 15px;
+  letter-spacing: 1px;
+}
+
+ul {
+  margin: 10px 5px 10px 5px;
+  letter-spacing: 1px;
+  font-size: 15px;
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 15px;
+}
+
+li {
+  margin-bottom: 3px;
 }
 
 div {
-  border: solid black 0.5px;
+  /* border: solid black 1px; */
 }
 
 #speed img {
@@ -54,7 +138,8 @@ div {
   width: 250px;
 }
 
-#saved-games, #highscore {
+#saved-games,
+#highscore {
   text-align: center;
 }
 
@@ -69,12 +154,12 @@ div {
 
 button:hover {
   cursor: pointer;
-  box-shadow: 0 0 10px 0 aqua;
+  /* box-shadow: 0 0 10px 0 aqua; */
 }
 
 img:hover {
   cursor: pointer;
-  box-shadow: 0 0 10px 0 aqua;
+  /* box-shadow: 0 0 10px 0 aqua; */
 }
 
 .hidden {
@@ -86,7 +171,7 @@ img:hover {
   width: 300px;
   display: flex;
   flex-wrap: wrap;
-  margin: 10px 0;
+  margin: 10px 0 30px 0;
 }
 
 #game-board {
@@ -94,11 +179,11 @@ img:hover {
   width: 600px;
   display: flex;
   flex-wrap: wrap;
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 .cell {
-  border: solid rgba(0,0,0,0.2) 1px;
+  border: solid rgba(0, 0, 0, 0.2) 1px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -112,4 +197,3 @@ img:hover {
 .dead {
   background-color: white;
 }
-

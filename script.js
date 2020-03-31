@@ -20,21 +20,22 @@ let highScore = JSON.parse(window.localStorage.getItem("highScore")) || 0;
 // let qnsId = 1;
 let qnsProgressState = false;
 let totalQns = 6;
+let boardChanges = 0;
 let gameModeState = "puz";
-const sandBoxPrompt = "Challenge yourself by creating a constantly evolving cell culture!";
+const sandBoxPrompt = "<p>Challenge yourself by creating a constantly evolving cell culture!</p>";
 const qnsText = {
   q1:
-    "Reach the target form in 2 clicks and 1 generation. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+    "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.</p><br>Each click can change white cells to black and vice versa. Click START GAME when you are ready to simulate the generations.",
   q2:
-    "Reach the target form in 2 clicks and 1 generation. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.</p><br>Each click can change white cells to black and  vice versa. Click START GAME when you are ready to simulate the generations.",
   q3:
-    "Reach the target form in 2 clicks and 4 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.</p><br>Each click can change white cells to black and  vice versa. Click START GAME when you are ready to simulate the generations.",
   q4:
-    "Reach the target form in 2 clicks and 4 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.</p><br>Each click can change white cells to black and  vice versa. Click START GAME when you are ready to simulate the generations.",
   q5:
-    "Reach the target form in 4 clicks and 2 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations.",
+  "<p>Q: Reach the TARGET FORM in <u>4 CLICKS</u> and <u>2 GENERATIONS</u>.</p><br>Each click can change white cells to black and  vice versa. Click START GAME when you are ready to simulate the generations.",
   q6:
-    "Reach the target form in 2 clicks and 5 generations. <br><br> Each click can change dead (i.e. white) cells to live (i.e. black) cells or vice versa. <br><br> Press 'start game' when you are ready to simulate the generations."
+  "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>5 GENERATIONS</u>.</p><br>Each click can change white cells to black and vice versa. Click START GAME when you are ready to simulate the generations."
 };
 let winMsg = "You found a match!";
 
@@ -76,7 +77,7 @@ function changeMode(event) {
     gameBoardDiv.style.height = boardSizeDimension + "px";
     gameBoardDiv.style.width = boardSizeDimension + "px";
     document.getElementById("center").style.width = boardSizeDimension + "px";
-    qnsTextSelector.textContent = sandBoxPrompt;
+    qnsTextSelector.innerHTML = sandBoxPrompt;
     clearBoardForSandBox();
     createAndDisplayAllSavedElements();
     if (highScore !== 0) {
@@ -191,6 +192,9 @@ function loadQns(event) {
   generationCount = 0;
   displayGenCount();
   qnsProgressState = true;
+  if (gameProgressState === true) {
+    endGamePuz();
+  }
 }
 
 //Loads target form pattern on DOM and global array depending on selected question number; players may not ammend this pattern
@@ -251,22 +255,27 @@ function playGame(event) {
       arrayCellDetails.push(cellObj);
     }
   }
+  boardChanges = 0;
   // console.log(arrayCellDetails);
   //Based on live cell count, modifies cell state according to Conway GOL rules
   for (let i = 0; i < arrayCellDetails.length; i++) {
     if (arrayCellDetails[i].state === ALIVE) {
       if (arrayCellDetails[i].surrLiveCells < 2 || arrayCellDetails[i].surrLiveCells > 3) {
         gamePlayArr[arrayCellDetails[i].xCoor][arrayCellDetails[i].yCoor] = DEAD;
+        boardChanges++;
       }
     } else if (arrayCellDetails[i].state === DEAD) {
       if (arrayCellDetails[i].surrLiveCells === 3) {
         gamePlayArr[arrayCellDetails[i].xCoor][arrayCellDetails[i].yCoor] = ALIVE;
+        boardChanges++;
       }
     }
   }
   // console.log(gamePlayArr);
   printArrayToGameBoard(gamePlayArr);
-  generationCount++;
+  if (boardChanges !== 0) {
+    generationCount++;
+  }
   // console.log(generationCount);
   displayGenCount();
   //sets interval that playGame function is triggered and cells change state
