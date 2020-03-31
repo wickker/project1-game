@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&family=Raleway:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&family=Raleway:wght@300&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Quicksand&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
     <title></title>
@@ -20,14 +20,16 @@
         <p class="puz"><button id="q5">Q5</button></p>
         <p class="puz"><button id="q6">Q6</button></p>
         <h2 id="saved-games-header" class="sandbox"></h2>
-        <div id="saved-games" class="sandbox">
-        </div>
+        <div id="saved-games" class="sandbox"></div>
       </div>
       <div class="col" id="center">
         <h1>CONWAY'S GAME OF LIFE</h1>
         <h2><span id="mode">Puzzle</span> Mode</h2>
         <div id="toggle-button"><button>CHANGE GAME MODE</button></div>
-        <div id="qns-text"></div>
+        <div id="qns-text">
+          <p id="qns"></p>
+          <p class="puz">Each click can change white cells to black and vice versa. Click a QUESTION NUMBER and then START GAME when you are ready to simulate the generations.</p>
+        </div>
         <div class="inline-button">
           <div id="start-button">
             <button>START GAME</button>
@@ -49,7 +51,7 @@
             <button>SAVE PATTERN</button>
           </div>
         </div>
-        
+
         <div id="intro">
           <h3>Rules</h3>
           <ul>
@@ -61,14 +63,13 @@
         </div>
       </div>
       <div class="col" id="right">
-        <div id="highscore" class="sandbox">
-        </div>
+        <div id="highscore" class="sandbox"></div>
         <h2 class="puz">Target Form:</h2>
         <div id="target-form-board" class="puz"></div>
         <div id="speed" class="sandbox">
           <p class="sandbox">Speed of Animation:</p>
-          <img id="dcr" class="sandbox" src="down.png">
-          <img id= "inc" class="sandbox" src="up.png">
+          <img id="dcr" class="sandbox" src="down.png" />
+          <img id="inc" class="sandbox" src="up.png" />
         </div>
         <div id="gen-count">
           <h2>Generation Count: <span id="gen-count-num"></span></h2>

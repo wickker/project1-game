@@ -22,20 +22,20 @@ let qnsProgressState = false;
 let totalQns = 6;
 let boardChanges = 0;
 let gameModeState = "puz";
-const sandBoxPrompt = "<p>Challenge yourself by creating a constantly evolving cell culture!</p>";
+const sandBoxPrompt = "Challenge yourself by creating a constantly evolving cell culture!";
 const qnsText = {
   q1:
-    "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.</p><br>Each click can change white cells to black and vice versa. Click START GAME when you are ready to simulate the generations.",
+    "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.",
   q2:
-  "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.</p><br>Each click can change white cells to black and  vice versa. Click START GAME when you are ready to simulate the generations.",
+  "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>1 GENERATION</u>.",
   q3:
-  "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.</p><br>Each click can change white cells to black and  vice versa. Click START GAME when you are ready to simulate the generations.",
+  "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.",
   q4:
-  "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.</p><br>Each click can change white cells to black and  vice versa. Click START GAME when you are ready to simulate the generations.",
+  "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>4 GENERATIONS</u>.",
   q5:
-  "<p>Q: Reach the TARGET FORM in <u>4 CLICKS</u> and <u>2 GENERATIONS</u>.</p><br>Each click can change white cells to black and  vice versa. Click START GAME when you are ready to simulate the generations.",
+  "Q: Reach the TARGET FORM in <u>4 CLICKS</u> and <u>2 GENERATIONS</u>.",
   q6:
-  "<p>Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>5 GENERATIONS</u>.</p><br>Each click can change white cells to black and vice versa. Click START GAME when you are ready to simulate the generations."
+  "Q: Reach the TARGET FORM in <u>2 CLICKS</u> and <u>5 GENERATIONS</u>."
 };
 let winMsg = "You found a match!";
 
@@ -46,7 +46,7 @@ const endButtonSelector = document.querySelector("#end-button button");
 const clearButtonSelector = document.querySelector("#clear-button button");
 const saveButtonSelector = document.querySelector("#save-button button");
 const targetFormDiv = document.getElementById("target-form-board");
-const qnsTextSelector = document.getElementById("qns-text");
+const qnsTextSelector = document.getElementById("qns");
 const winMsgSelector = document.getElementById("win-msg");
 const genCountNumSelector = document.getElementById("gen-count-num");
 const modeButtonSelector = document.querySelector("#toggle-button button");
