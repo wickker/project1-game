@@ -441,7 +441,7 @@ function displayGenCount() {
 //Saves current game board configuration to local storage
 function saveGameForPlayer() {
   let dataArr = [];
-  dataArr.push(gamePlayArr);
+  dataArr.push(JSON.parse(JSON.stringify(gamePlayArr)));
   let newDate = new Date();
   //Allows player to rename saved file
   gameName = prompt("Please input file name", newDate.getDate() + "-" + newDate.getMinutes());
@@ -501,7 +501,6 @@ function randomBoard(event) {
     for (let y = 0; y < currentBoardSize; y++) {
       let cellId = x + "-" + y;
       let randomNum = Math.floor(Math.random() * 5);
-      //console.log(cellId);
       if (randomNum === 2 || randomNum === 3) {
         document.getElementById(cellId).classList.remove(DEAD);
         document.getElementById(cellId).classList.add(ALIVE);
